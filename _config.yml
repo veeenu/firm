@@ -1,0 +1,4 @@
+name: Andrea Venuta
+markdown: kramdown
+highlighter: pygments
+exclude: [jade,tex,Makefile]
