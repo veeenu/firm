@@ -9,6 +9,7 @@
 \renewcommand*\rmdefault{ppl}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{0.5em}
+\newtheorem{defn}{Definition}
 
 \title{Quantitative Finance and Derivatives}
 
@@ -78,11 +79,59 @@
 
   \[
     \frac{S_n - n \cdot E\left[X_i\right]}{\sqrt{n \cdot Var\left[X_i\right]}}
-    = \frac{S_n}{\sqrt{n}} \overset{n \to \infty}{\sim} \mathcal{N}(0,1)
+    = \frac{S_n}{\sqrt{n}} \underset{n \to \infty}{\sim} \mathcal{N}(0,1)
   \]
 
-  Consider now a non-unitary time. Suppose we move in time steps of \(\delta > 0\)
-  and in space steps of \(\sqrt{\delta}\).
+  Consider now a non-unitary  time. Suppose we move in time  steps of \(\delta >
+  0\) and in space steps of \(\sqrt{\delta}\), and let's consider the process in
+  the interval $[0,t],\ t\in\mathbb{R}^+$. Then,
+
+  \[
+    S_t = \sum_{i=0}^{\left\lfloor \frac{t}{\delta} \right\rfloor} X_i
+  \]
+
+  where     $X_i$     moves     by     $\pm\sqrt\delta$     with     probability
+  $\mathbb{P}=\frac{1}{2}$. Then, $E\left[S_t\right]=0$ and
+
+  \[
+    Var[X_i] = E^2[X_i] - E[X_i^2] = E^2[X_i] = (+\sqrt{\delta})^2 \cdot \frac{1}{2} + (-\sqrt{\delta})^2 \cdot \frac{1}{2} 
+      = \delta
+  \]
+
+  \[
+    Var[S_t] = \frac{t}{\delta} \cdot \delta = t
+  \]
+
+  Let's now apply \textit{Central Limit Theorem}:
+
+  \[
+    \frac{S_t - \frac{t}{\delta} E[X_i]}{\sqrt{\frac{t}{\delta} Var[X_i]}}
+    = \frac{S_t}{\sqrt{t}} \underset{t \to \infty}{\sim} \mathcal{N}(0,1).
+  \]
+
+  So, $S_t \sim \mathcal{N}(0,t)$: this is the \textit{Brownian motion}.
+
+  \begin{defn} 
+    \textbf{(Brownian motion).} The stochastic process 
+
+    \[
+      (W_t)_{t\in\mathbb{R}^+} : \mathbb{R}^+ \times (\Omega, (\mathcal{F}_t)_{t \geq 0}, \mathbb{P}) \to \mathbb{R}
+    \]
+
+    is a Brownian motion if and only if
+
+    \begin{enumerate}
+      \item $W_0 = 0$,
+      \item it is continuous,
+      \item has stationary increments: 
+        
+        $$\forall t > s,\ W_t - W_s \sim \mathcal{N}(0,t-s)$$
+
+      \item has independent increments over disjoint intervals: 
+        
+        $$\forall q < r < s < t,\ (W_r-W_q) \perp (W_t-W_s).$$
+    \end{enumerate}
+  \end{defn}
 
   %\begin{enumerate}
   %  \item From Random Walk to Brownian Motion

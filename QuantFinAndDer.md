@@ -62,9 +62,46 @@ As $n$ approaches infinity, the conditions for the *Central Limit
 Theorem* hold: $X_i$s are *i.i.d.*, so we can apply
 
 $$\frac{S_n - n \cdot E\left[X_i\right]}{\sqrt{n \cdot Var\left[X_i\right]}}
-    = \frac{S_n}{\sqrt{n}} \overset{n \to \infty}{\sim} \mathcal{N}(0,1)$$
+    = \frac{S_n}{\sqrt{n}} \underset{n \to \infty}{\sim} \mathcal{N}(0,1)$$
 
 Consider now a non-unitary time. Suppose we move in time steps of
-$\delta > 0$ and in space steps of $\sqrt{\delta}$.
+$\delta >
+  0$ and in space steps of $\sqrt{\delta}$, and let’s consider the
+process in the interval $[0,t],\ t\in\mathbb{R}^+$. Then,
+
+$$S_t = \sum_{i=0}^{\left\lfloor \frac{t}{\delta} \right\rfloor} X_i$$
+
+where $X_i$ moves by $\pm\sqrt\delta$ with probability
+$\mathbb{P}=\frac{1}{2}$. Then, $E\left[S_t\right]=0$ and
+
+$$Var[X_i] = E^2[X_i] - E[X_i^2] = E^2[X_i] = (+\sqrt{\delta})^2 \cdot \frac{1}{2} + (-\sqrt{\delta})^2 \cdot \frac{1}{2} 
+      = \delta$$
+
+$$Var[S_t] = \frac{t}{\delta} \cdot \delta = t$$
+
+Let’s now apply *Central Limit Theorem*:
+
+$$\frac{S_t - \frac{t}{\delta} E[X_i]}{\sqrt{\frac{t}{\delta} Var[X_i]}}
+    = \frac{S_t}{\sqrt{t}} \underset{t \to \infty}{\sim} \mathcal{N}(0,1).$$
+
+So, $S_t \sim \mathcal{N}(0,t)$: this is the *Brownian motion*.
+
+**(Brownian motion).** The stochastic process
+
+$$(W_t)_{t\in\mathbb{R}^+} : \mathbb{R}^+ \times (\Omega, (\mathcal{F}_t)_{t \geq 0}, \mathbb{P}) \to \mathbb{R}$$
+
+is a Brownian motion if and only if
+
+1.  $W_0 = 0$,
+
+2.  it is continuous,
+
+3.  has stationary increments:
+
+    $$\forall t > s,\ W_t - W_s \sim \mathcal{N}(0,t-s)$$
+
+4.  has independent increments over disjoint intervals:
+
+    $$\forall q < r < s < t,\ (W_r-W_q) \perp (W_t-W_s).$$
 
 ### Itô Formula
