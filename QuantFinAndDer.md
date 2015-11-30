@@ -18,26 +18,22 @@ continuous time.
 
 We have four different possible situations:
 
-1.  $X(n,\omega) : \mathbb{N} \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{Z}$:
-
+1.  $X(n,\omega) : \mathbb{N} \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{Z}:$
     discrete time, discrete values. For example: a *random walk*.
 
-2.  $X(n,\omega) : \mathbb{N} \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{R}$:
-
+2.  $X(n,\omega) : \mathbb{N} \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{R}:$
     discrete time, continuous values.
 
-3.  $X(n,\omega) : \mathbb{R}^+ \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{Z}$:
-
+3.  $X(n,\omega) : \mathbb{R}^+ \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{Z}:$
     continuous time, discrete values. For example: a *Poisson process*.
 
-4.  $X(n,\omega) : \mathbb{R}^+ \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{R}$:
-
+4.  $X(n,\omega) : \mathbb{R}^+ \times (\Omega,\mathcal{F},\mathbb{P}) \to \text{a subset of } \mathbb{R}:$
     continuous time, continuous values. For example: a *Brownian
     motion*.
 
 #### From random walk to Brownian motion
 
-Let $(X\_n)\_{n   \geq    0}$ be a stochastic process such that $X_i$,
+Let $$(X_n)_{n   \geq    0}$$ be a stochastic process such that $X_i$,
 for any $i$, can take value $1$ with probability
 $\mathbb{P}(X_i=1)=\frac{1}{2}$, and $-1$ with probability
 $\mathbb{P}(X_i=-1)=\frac{1}{2}$. Let then
@@ -50,7 +46,7 @@ following:
 
 $$E\left[X_i\right] = (+1) \cdot \frac{1}{2} + (-1) \cdot \frac{1}{2} = 0$$
 
-$$Var\left[S_n\right] \to E\left[X_i^2\right] = (+1)^2 \cdot \frac{1}{2} + (-1)^2 \cdot \frac{1}{2} = 1$$
+$$E\left[X_i^2\right] = (+1)^2 \cdot \frac{1}{2} + (-1)^2 \cdot \frac{1}{2} = 1$$
 
 Hence,
 
