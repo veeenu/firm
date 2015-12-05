@@ -92,12 +92,23 @@ is a Brownian motion if and only if
 
 2.  it is continuous,
 
-3.  has stationary increments:
+3.  has stationary increments: the distribution doesn’t depend on
+    initial time, only on waiting time.
 
     $$\forall t > s,\ W_t - W_s \sim \mathcal{N}(0,t-s)$$
 
 4.  has independent increments over disjoint intervals:
 
     $$\forall q < r < s < t,\ (W_r-W_q) \perp (W_t-W_s).$$
+
+#### Classes of Brownian motions
+
+1.  <span>***Standard Brownian motion*, or *Wiener Process***</span>.
+
+2.  <span>***Arithmetic Brownian motion*, or *Bachelier Model***</span>.
+
+    $$dp_t = p_{t+h} - p_t = \mu dt + \sigma dW_t$$
+
+    Where $\mu$ is called *drift*, and $\sigma$ the *volatility*.
 
 ### Itô Formula

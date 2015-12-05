@@ -1,15 +1,27 @@
-\documentclass[twoside,openright,titlepage,headinclude,12pt,a4paper,BCOR5mm,footinclude]{book}
+\documentclass[oneside,titlepage,headinclude,12pt,a4paper,BCOR5mm,footinclude]{book}
 \usepackage{pdfpages}
 \usepackage[T1]{fontenc}
 \usepackage{mathtools}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amsthm}
-\theoremstyle{definition}
+\usepackage{enumitem} 
 \renewcommand*\rmdefault{ppl}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{0.5em}
+%\theoremstyle{definition}
+\newtheoremstyle{defn}
+  {\topsep}
+  {\topsep}
+  {\normalfont}
+  {0pt}
+  {\bfseries}
+  {.}
+  {5pt plus 1pt minus 1pt}
+  {}
+\theoremstyle{defn}
 \newtheorem{defn}{Definition}
+\newtheorem{example}{Example}
 
 \title{Quantitative Finance and Derivatives}
 
@@ -112,10 +124,11 @@
 
     is a Brownian motion if and only if
 
-    \begin{enumerate}
+    \begin{enumerate}[label=(\Roman*)]
       \item $W_0 = 0$,
       \item it is continuous,
-      \item has stationary increments: 
+      \item  has  stationary  increments:  the distribution  doesn't  depend  on
+             initial time, only on waiting time.
         
         $$\forall t > s,\ W_t - W_s \sim \mathcal{N}(0,t-s)$$
 
@@ -131,6 +144,129 @@
   %  \item Classifications
   %\end{enumerate}
 
-  \subsection{It\^o Formula}
+  \begin{defn}\textbf{(Classes of Brownian motions.)}
 
+  \begin{enumerate}[label=(\Roman*)]
+    \item \textit{Standard Brownian motion}, or \textit{Wiener Process}.
+    \item \textit{Arithmetic Brownian motion}, or \textit{Bachelier Model}.
+      \[
+        dp_t = p_{t+h} - p_t = \mu dt + \sigma dW_t
+      \]
+
+      Where    $\mu$    is    called   \textit{drift},    and    $\sigma$    the
+      \textit{volatility}. This is  a \textit{stochastic differential equation},
+      \textit{SDE} for short: while the $\mu dt$ part is \textit{deterministic},
+      the $\sigma  dW_t$ contains  a \textit{stochastic}  component, which  is a
+      standard Brownian motion. This kind of  equations provides a model for the
+      change of the  price $p_t$ over the infinitesimal time  increment from $t$
+      to $t+h$. The price variation could be equivalently modeled this way:
+      \[
+        p_t - p_0 = \mu(t-0) + \sigma(W_t - W_0) = \mu t + \sigma W_t
+      \]
+      Noting that 
+
+      \[ 
+        E[W_t]  =  0
+        \quad \text{and} \quad
+        Var[\sigma W_t]  =  E[(\sigma W_t)^2]  = \sigma^2 E[W_t^2] =  \sigma^2 t,
+      \]
+
+      we have that, in Bachelier's model, the price  $p_t = \mu t + \sigma W_t +
+      p_0$ is a \textit{random variable} distributed like
+      \[
+        p_t \sim \mathcal{N}(p_0 + \mu t + E[W_t], \sigma^2 t) \equiv
+          \mathcal{N}(p_0 + \mu t, \sigma^2 t).
+      \]
+
+    \item \textit{Geometric Brownian motion}, or \textit{Black-Scholes model}.
+      \[
+        dp_t = \mu p_t dt + \sigma p_t dW_t
+      \]
+      This model is similar to Bachelier's, but acts on a multiplicative instead
+      of additive principle. For this model, we will need to find a solution and
+      its distribution.
+
+  \end{enumerate}
+
+  \subsection{It\=o Formula}
+
+  Suppose a model for  an underlying asset price dynamics is  given: we know the
+  form of $dp_t$;  we'll assume Black-Scholes. It is now  natural to assume that
+  the price  of a  derivative on this  asset is a  \textit{function}, let  it be
+  $f(p_t)$, of the asset price. How can we get a \textit{stochastic differential
+  equation} that models the derivative price variation?
+
+  Let's evaluate the \textit{Taylor expansion} for $f(p_t)$ like in a deterministic setting.
+  \[
+    f(x) \approx f(x_0) + f'(x_0)(x-x_0) + \frac{1}{2} f''(x_0)(x-x_0)^2 + \varepsilon
+  \]
+  where $\varepsilon$  is a  remainder that  goes quickly to  zero. We  will now
+  discard all  terms in the  approximation that go to  0 faster than  $dt$ does,
+  thus truncating the approximation to to the first order. Let now $x=p_{t+dt}$,
+  $x_0 = p_t$ and $dp_t = p_{t+dt} - p_t$
+  \[
+    f(p_{t+dt}) \approx f(p_t) + f'(p_t)(dp_t) + \frac{1}{2} f''(p_t)(dp_t)^2 + \varepsilon
+  \]
+  and substitute the increment $dp_t$ with the Black-Scholes model:
+  \begin{align*}
+    f(p_{t+dt}) = & f(p_t) + f'(p_t)(\mu p_t dt + \sigma p_t dW_t) +\\ 
+                  & \frac{1}{2}f''(p_t)(\mu^2 p_t^2 (dt)^2 + \sigma^2 p_t^2 (dW_t)^2 + 2 \mu \sigma p_t^2 dtdW_t) 
+  \end{align*}
+
+  Since $E[(dW_t)^2] = dt$, we can  assume $dW_t = \sqrt{dt} = (dt)^\frac{1}{2}$
+  to have order $\frac{1}{2}$. Let's analyze the  orders of all the terms in the
+  approximation:
+  \begin{itemize}
+    \item $\mu p_t dt$: First order: keep it.
+    \item $\sigma p_t dW_t$: Order $\frac{1}{2}$: keep it.
+    \item $\mu^2 p_t^2 (dt)^2$: Second order: discard it.
+    \item $\sigma^2 p_t^2 (dW_t)^2$: First order, because $(dW_t)^2 = dt$: keep it.
+    \item $2 \mu \sigma p_t^2 dtdW_t$: Order $\frac{3}{2}$ because of $dtdW_t$: discard it.
+  \end{itemize}
+  The truncated approximation now states that
+  \[
+    f(p_{t+dt}) = f(p_t) + f'(p_t)(\mu p_t dt + \sigma p_t dW_t) + 
+    \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt). 
+  \]
+
+  The second derivative term of this equation is called \textit{It\=o correction
+  term}.  The derivative  of  the function  with  respect to  time  can then  be
+  computed this way:
+  \[
+    df(p_t) = f(p_{t+dt}) - f(p_t) = f'(p_t)(\mu p_t dt + \sigma p_t dW_t) + 
+    \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt)
+  \]
+  Let's now  separate the deterministic terms  from the stochastic terms,  so we
+  can identify a \textit{drift} and a \textit{volatility} for the model.
+  \[
+    df(p_t) = \left[ f'(p_t)\mu p_t + \frac{1}{2}f''(p_t)\sigma^2 p_t^2\right]dt
+      + f'(p_t)\sigma p_t dW_t
+  \]
+
+  \begin{example}
+    Let  $f(p_t) =  \ln(p_t)$  be  the price  of  a  derivative instrument  with
+    underlying  price  $p_t$;  the  dynamic   for  the  underlying  follows  the
+    Black-Scholes model. Apply It\=o's formula to this derivative:
+    \begin{align*}
+      d\ln(p_t) = & \left[ \frac{1}{p_t} \mu p_t + \frac{1}{2}\left( 
+        -\frac{1}{p_t^2}\sigma^2 p_t^2\right)\right]dt +
+        \frac{1}{p_t}\sigma p_t dW_t = \\
+        = & \left[\mu - \frac{1}{2} \sigma^2 \right]dt + \sigma dW_t
+    \end{align*}
+    Considering the time interval $[0,t]$, we observe that
+    \[
+      d\ln(p_t) = \ln(p_t) - \ln(p_0) = \left( \mu - \frac{1}{2}\sigma^2 \right)
+        (t-0) + \sigma (W_t - W_0)
+    \]
+    and then
+    \[
+      \ln\left(\frac{p_t}{p_0}\right) = \left(\mu -\frac{1}{2}\sigma^2\right)t + \sigma W_t
+      \iff
+      \frac{p_t}{p_0} = \mathrm{e}^{\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t}
+    \]
+    which yields the solution
+    \[
+      p_t = p_0 \mathrm{e}^{\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t}.
+    \]
+  \end{example}
 \end{document}
