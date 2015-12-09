@@ -6,6 +6,7 @@
 \usepackage{amsfonts}
 \usepackage{amsthm}
 \usepackage{enumitem} 
+\usepackage{cancel}
 \renewcommand*\rmdefault{ppl}
 \setlength{\parindent}{0em}
 \setlength{\parskip}{0.5em}
@@ -22,6 +23,9 @@
 \theoremstyle{defn}
 \newtheorem{defn}{Definition}
 \newtheorem{example}{Example}
+
+\newcommand{\eexp}{\mathrm{e}}
+\newcommand{\de}{\partial}
 
 \title{Quantitative Finance and Derivatives}
 
@@ -292,5 +296,126 @@
       p_t = p_0 \mathrm{e}^{\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t}.
     \]
   \end{example}
+
+  \begin{example}
+    Black-Scholes model assumes the \textit{spot risk-free interest rate} $r$ to
+    be constant and independent of  maturity. Consider \textit{discounting} as a
+    function of time and asset price:
+
+    \[
+      f(t;p_t) = \eexp^{-rt}p_t
+    \]
+
+    The general It\=o formula for a function of such a form is
+
+    \begin{align*}
+      d[f(t;p_t)] = & 
+        \frac{\partial f}{\partial p_t} dp_t + 
+        \frac{\partial f}{\partial t} dt + 
+        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} (dp_t)^2 +
+        \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial t^2} (dt)^2}}_\text{order 2} +
+        \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial p_t \partial t} 2dtdp_t}}_\text{order 3/2}
+        \\
+        = & 
+        \frac{\partial f}{\partial p_t} dp_t + 
+        \frac{\partial f}{\partial t} dt + 
+        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2dt
+    \end{align*}
+
+    For the discounting function, this means
+
+    \begin{align*}
+      d[e^{-rt}p_t] = & \eexp^{-rt} \cdot 1 \cdot dp_t + -r\eexp^{-rt}p_tdt +
+        \cancelto{0}{\frac{1}{2} \cdot 0 \cdot \sigma^2 p_t^2 dt}
+        \\
+        = & \eexp^{-rt}\left( \mu p_t dt + \sigma p_t dW_t -r p_t dt \right)
+        \\
+        = & (\mu - r) \expe^{-rt} p_tdt + \expe^{-rt} p_t\sigma dW_t
+        \\
+      d\tilde{p}_t = & (\mu - r)\tilde{p}_tdt + \sigma \tilde{p}_t dW_t
+    \end{align*}
+
+    Hence, the distribution for a discounted asset price follows Black-Scholes model:
+
+    \begin{align*}
+      \tilde{p}_t = \tilde{p}_0 \eexp^{(\mu - r - \frac{\sigma^2}{2})t + \sigma W_t}
+    \end{align*}
+
+    Note that the  deterministic and stochastic parts were  grouped together, to
+    underline the \textit{risk factor}.
+  \end{example}
+
+  \subsection{Black-Scholes PDE for option pricing} 
+
+  In the context of option pricing, Black-Scholes model assumes the following:
+
+  \begin{itemize}
+    \item $p_t$ is the underlying asset price at time $t$,
+    \item $r$ is a constant, risk-free interest rate,
+    \item There are no transaction costs, no taxes, and no arbitrage opportunity,
+    \item The market is liquid, and so all the instruments,
+    \item $f(t;p_t)$ is the option price.
+  \end{itemize}
+
+  By It\=o's lemma, we get that the option price is
+
+  \[
+    df(t;p_t) = \left[ \frac{\partial f}{\partial t}} + \frac{\partial f}{\partial p_t} \mu p_t +
+      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt +
+      \frac{\partial f}{\partial p_t} \sigma p_t dW_t
+  \]
+
+  Construct a \textit{locally} risk-free portfolio, $\Pi_t$, such that
+
+  \[
+    \Pi_t = \left\{ 
+      \begin{array}{cl}
+        -1 & \text{positions in options (short)} \\
+        \Delta_t \equiv \frac{\partial f}{\partial p_t} & \text{positions in underlying (long)}
+      \end{array}
+  \]
+
+  and study  the dynamics of  the portfolio value  by multiplying the  number of
+  positions by the dynamics for each kind of instrument (option and asset).
+
+  \begin{align*}
+    d\Pi_t = & -1 \cdot df(t;p_t) + \frac{\partial f}{\partial p_t} dp_t
+    \\ = & \underbrace{- \left[
+        \frac{\partial f}{\partial t} + \frac{\partial f}{\partial p_t} \mu p_t +
+        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
+        \frac{\partial f}{\partial p_t}\sigma p_t dW_t}_\text{option} +
+      \underbrace{
+        \frac{\partial f}{\partial p_t} \left( \mu p_t dt + \sigma p_t dW_t \right)
+      }_\text{asset}
+    \\ = & - \left[
+        \frac{\partial f}{\partial t} + 
+        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
+        \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} -
+        \cancel{\frac{\partial f}{\partial p_t}\sigma p_t dW_t}
+        + \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} + 
+        \cancel{\frac{\partial f}{\partial p_t} \sigma p_t dW_t}
+    \\ = & - \left( \frac{\partial f}{\partial t} + 
+      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt
+  \end{align*}
+
+  Having removed  the Brownian motion,  we are left  without any risky  term. We
+  impose now the  \textit{no arbitrage assumption}, stating that  a portfolio is
+  risk-free if  and only  if its dynamics  is the  same of a  bond, that  is, it
+  accrues interest at a constant (by assumption) rate over time.
+
+  \[
+    d\Pi_t \equiv - \left( \frac{\partial f}{\partial t} + 
+      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt 
+      \stackrel{\text{NAA}}{=} r\Pi_t dt
+  \]
+
+  \[
+    -\frac{\de f}{\de t} -\frac{1}{2}\frac{\de^2f}{\de p_t^2} \sigma^2 p_t^2 =
+    -rf(t;p_t) + \frac{\de f}{\de p_t} rp_t
+  \]
+
+  \[
+    rf(t;p_t) = \frac{\de f}{\de t} - \frac{\de f}{\de p_t} rp_t + \frac{1}{2}\frac{\de^2 f}{\de p_t^2} \sigma^2 p_t^2
+  \]
 
 \end{document}
