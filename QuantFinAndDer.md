@@ -338,4 +338,42 @@ $$d\Pi_t \equiv - \left( \frac{\partial f}{\partial t} +
 $$-\frac{{\partial}f}{{\partial}t} -\frac{1}{2}\frac{{\partial}^2f}{{\partial}p_t^2} \sigma^2 p_t^2 =
     -rf(t;p_t) + \frac{{\partial}f}{{\partial}p_t} rp_t$$
 
-$$rf(t;p_t) = \frac{{\partial}f}{{\partial}t} - \frac{{\partial}f}{{\partial}p_t} rp_t + \frac{1}{2}\frac{{\partial}^2 f}{{\partial}p_t^2} \sigma^2 p_t^2$$
+Finally, we obtain the Black-Scholes PDE by rearranging.
+
+$$rf(t;p_t) = \frac{{\partial}f}{{\partial}t} + \frac{{\partial}f}{{\partial}p_t} rp_t + \frac{1}{2}\frac{{\partial}^2 f}{{\partial}p_t^2} \sigma^2 p_t^2$$
+
+The objective is to establish the *fair* (or *no arbitrage*) price of an
+option today, that is, $f(0;p_0)$. A *final condition* can be imposed:
+$f(T,p_T)$, which is the *option price at maturity* or, equivalently,
+the *payoff*, which is known.
+
+$$f(T;p_T) \stackrel{e.g.}{=}
+    \begin{array}{ll}
+      (P_T - K)^+ = \max \{ P_T - K, 0 \} & \text{European call option} \\
+      (K - P_T)^+ = \max \{ K - P_T, 0 \} & \text{European put option}
+    \end{array}$$
+
+European options satisfy Black-Scholes assumptions: the payoff depends
+*only* on the price of the underlying at time $T$, and it is not *path
+dependent*. The drift term $\mu$ does not appear in the payoff function
+$f(t;p_t)$; this means that the Black-Scholes option price doesn’t
+depend on it. The drift term is strongly linked to investor’s *risk
+aversion*: this means the option can be priced *as if* the investor is
+*risk neutral*.
+
+A *risk neutral* valuation of current option price, given payoff
+$f(T,p_T)$, is
+
+$$f(0;p_0) = \tilde{\mathbb{E}} \left[ e^{-rT} f(T;p_T)\right]$$
+
+Where $\tilde{\mathbb{E}}$ is the expectation according to the *risk
+neutral probability* $\tilde{\mathbb{P}}$. We now have, in fact, two
+probability spaces: the first is the *historical probability space*
+$(\Omega,\mathcal{F},\mathbb{P})$, the second is the *risk neutral
+probability space*
+$(\Omega,  \mathcal{F},   \tilde{\mathbb{P}})  \supseteq
+  (\Omega,\mathcal{F},\mathbb{P})$. To calculate the option price at any
+given time $t : 0 <  t < T$ the information in the filtration up to time
+$t$ can be used:
+
+$$f(t;p_0) = \tilde{\mathbb{E}} \left[ e^{-r(T-t)} f(T;p_t) \left| \mathcal{F}_t\right]$$
