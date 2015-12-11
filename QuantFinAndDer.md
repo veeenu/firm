@@ -257,7 +257,7 @@ $$\begin{aligned}
         \\
         = & {\mathrm{e}}^{-rt}\left( \mu p_t dt + \sigma p_t dW_t -r p_t dt \right)
         \\
-        = & (\mu - r) \expe^{-rt} p_tdt + \expe^{-rt} p_t\sigma dW_t
+        = & (\mu - r) {\mathrm{e}}^{-rt} p_tdt + {\mathrm{e}}^{-rt} p_t\sigma dW_t
         \\
       d\tilde{p}_t = & (\mu - r)\tilde{p}_tdt + \sigma \tilde{p}_t dW_t
     \end{aligned}$$
@@ -335,12 +335,12 @@ $$d\Pi_t \equiv - \left( \frac{\partial f}{\partial t} +
       \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt 
       \stackrel{\text{NAA}}{=} r\Pi_t dt$$
 
-$$-\frac{{\partial}f}{{\partial}t} -\frac{1}{2}\frac{{\partial}^2f}{{\partial}p_t^2} \sigma^2 p_t^2 =
-    -rf(t;p_t) + \frac{{\partial}f}{{\partial}p_t} rp_t$$
+$$-\frac{ {\partial}f}{ {\partial}t} -\frac{1}{2}\frac{ {\partial}^2f}{ {\partial}p_t^2} \sigma^2 p_t^2 =
+    -rf(t;p_t) + \frac{ {\partial}f}{ {\partial}p_t} rp_t$$
 
 Finally, we obtain the Black-Scholes PDE by rearranging.
 
-$$rf(t;p_t) = \frac{{\partial}f}{{\partial}t} + \frac{{\partial}f}{{\partial}p_t} rp_t + \frac{1}{2}\frac{{\partial}^2 f}{{\partial}p_t^2} \sigma^2 p_t^2$$
+$$rf(t;p_t) = \frac{ {\partial}f}{ {\partial}t} + \frac{ {\partial}f}{ {\partial}p_t} rp_t + \frac{1}{2}\frac{ {\partial}^2 f}{ {\partial}p_t^2} \sigma^2 p_t^2$$
 
 The objective is to establish the *fair* (or *no arbitrage*) price of an
 option today, that is, $f(0;p_0)$. A *final condition* can be imposed:
@@ -355,11 +355,16 @@ $$f(T;p_T) \stackrel{e.g.}{=}
 
 European options satisfy Black-Scholes assumptions: the payoff depends
 *only* on the price of the underlying at time $T$, and it is not *path
-dependent*. The drift term $\mu$ does not appear in the payoff function
-$f(t;p_t)$; this means that the Black-Scholes option price doesn’t
-depend on it. The drift term is strongly linked to investor’s *risk
-aversion*: this means the option can be priced *as if* the investor is
-*risk neutral*.
+dependent*. The drift term $\mu$ does not appear in Black-Scholes PDE,
+and neither does in the payoff function $f(t;p_t)$; this means that the
+Black-Scholes option price doesn’t depend on it. The drift term is
+strongly linked to investor’s *risk aversion*: this means the option can
+be priced *as if* the investor is *risk neutral*.
+
+A *risk neutral* valuation intuitively means that we are pricing in a
+world where every investor behaves as if he himself is risk neutral; the
+real world is not risk neutral, though, and investors’ risk aversion is
+embedded in the *historical* data.
 
 A *risk neutral* valuation of current option price, given payoff
 $f(T,p_T)$, is
@@ -377,3 +382,78 @@ given time $t : 0 <  t < T$ the information in the filtration up to time
 $t$ can be used:
 
 $$f(t;p_0) = \tilde{\mathbb{E}} \left[ e^{-r(T-t)} f(T;p_t) \left| \mathcal{F}_t\right]$$
+
+If, in time $t: 0 \leq t \leq T$ the payoff is $(P_T - K)^+$, the price
+of an option at time $t$ is
+
+$$C(\tau = T-t, p_t, K, r, \sigma) = f(t;p_t) = p_t \mathcal{N}(d_1) - K{\mathrm{e}}^{-r\tau} \mathcal{N}(d_2)$$
+
+where
+
+$$\begin{aligned}
+      d_1 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r + \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}}
+      \\
+      d_2 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r - \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}} = d_1 - \sigma\sqrt{T-t}
+    \end{aligned}$$
+
+*Proof*. Suppose we are in a Black-Scholes world: we have one risky
+asset with dynamics such that
+$dp_t = \mu p_t dt + \sigma p_t d\tilde{W}_t$, a riskless asset with
+dynamics such that $dB_t = rB_t  dt$, and no arbitrage opportunities.
+Define $\tilde{W}_t  =  W_t  +  \frac{\mu-r}{\sigma}t$ where $\mu-r$ is
+the *risk premium* and $\frac{\mu-r}{\sigma}$ is the *market price of
+risk*. Hence,
+
+$$\begin{aligned}
+    dp_t & = rp_t dt + \sigma p_t \left[ dW_t + \frac{\mu-r}{\sigma}dt \right]
+    \\ & = \cancel{rp_tdt} + \sigma p_t dW_t + \mu p_t dt - \cancel{rp_t dt}
+    \\ & = \mu p_t dt + \sigma p_t dW_t
+  \end{aligned}$$
+
+Note that
+$\tilde{W}_t  \sim \mathcal{N}\left(  \frac{\mu-r}{\sigma}\Delta t;
+  \Delta t\right)$ is no longer a standard Brownian motion. We want to
+know the option price at time $t=0$, considering, for example, the
+payoff $f(T;p_T) =
+  (p_T - K)^+$:
+
+$$\begin{aligned}
+    C_0 & = f(0;p_0) = \mathbb{\tilde E}\left[{\mathrm{e}}^{-rT} (p_T - K)^+\right]
+    \\ & \stackrel{\text{Markov}}{=} \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left( 
+    p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma \tilde{W}_T}
+    -K\right)^+\right] = (*)_1
+  \end{aligned}$$
+
+Consider now that, if $X  \sim \mathcal{N}(0,T)$ and
+$Y \sim \mathcal{N}(0,1)$ then $X = \sqrt{T}Y$:
+
+$$\begin{aligned}
+    (*)_1 & = \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}Y}-K\right)^+\right]
+    \\ & = \int_{-\infty}^{+\infty} {\mathrm{e}}^{-rt} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y}-K\right)^+
+    \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{\frac{-y^2}{2}}dy = (*)_2
+  \end{aligned}$$
+
+We compute the integral only where the payoff is positive, that is,
+where
+
+$$\begin{aligned}
+    p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq K
+    & \iff
+    {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq \frac{K}{p_0}
+    \\ & \iff \left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y \geq \ln\frac{K}{p_0}
+    \\ & \iff y \geq \frac{-\ln\frac{p_0}{K} -\left(r - \frac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}} = -d_2
+  \end{aligned}$$
+
+$$\begin{aligned}
+    (*)_2 & = \int_{-d_2}^{+\infty} {\mathrm{e}}^{-rt} \left( p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma y\sqrt{T}}-K\right)
+      \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+      \\ & = \int_{-d_2}^{+\infty} \frac{p_0 {\mathrm{e}}^{-\frac{\sigma^2}{2} + \sigma y\sqrt{T} -\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+      - \int_{-d_2}^{+\infty} \frac{K{\mathrm{e}}^{-rt -\frac{y^2}{2}}}{\sqrt{2\pi}}dy
+      \\ & = p_0 \int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{(\sigma\sqrt{T}+y)^2}{2}}dy
+      - K{\mathrm{e}}^{-rt}\int_{-d2}^{+\infty} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+      \\ & \left(\text{Let } z=y+\sigma\sqrt{T} \text{ s.t. } -\infty\leq z \leq d_2+\sigma\sqrt{T}\right)
+      \\ & = p_0 \int_{-\infty}^{d_2+\sigma\sqrt{T}} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{z^2}{2}} dz
+      - K{\mathrm{e}}^{-rt}\int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+      \\ & = p_0 \mathcal{N}(d_2 + \sigma\sqrt{T}) - K{\mathrm{e}}^{-rt} \mathcal{N}(d_2)
+      \\ & = p_0 \mathcal{N}(d_1) - K{\mathrm{e}}^{-rt}\mathcal{N}(d_2).
+  \end{aligned}$$
