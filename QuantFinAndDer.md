@@ -6,10 +6,8 @@ title: Quantitative Finance and Derivatives
 Models for asset pricing
 ========================
 
-Underlying processes
+Stochastic Processes
 --------------------
-
-### Stochastic Processes
 
 Stochastic processes are collections of random variables representing
 the evolution of some system over time. Stochastic processes can have
@@ -31,7 +29,7 @@ We have four different possible situations:
     continuous time, continuous values. For example: a *Brownian
     motion*.
 
-#### From random walk to Brownian motion
+### From random walk to Brownian motion
 
 Let $$(X_n)_{n   \geq    0}$$ be a stochastic process such that $X_i$,
 for any $i$, can take value $1$ with probability
@@ -58,12 +56,12 @@ As $n$ approaches infinity, the conditions for the *Central Limit
 Theorem* hold: $X_i$s are *i.i.d.*, so we can apply
 
 $$\frac{S_n - n \cdot E\left[X_i\right]}{\sqrt{n \cdot Var\left[X_i\right]}}
-    = \frac{S_n}{\sqrt{n}} \underset{n \to \infty}{\sim} \mathcal{N}(0,1)$$
+  = \frac{S_n}{\sqrt{n}} \underset{n \to \infty}{\sim} \mathcal{N}(0,1)$$
 
 Consider now a non-unitary time. Suppose we move in time steps of
 $\delta >
-  0$ and in space steps of $\sqrt{\delta}$, and let’s consider the
-process in the interval $[0,t],\ t\in\mathbb{R}^+$. Then,
+0$ and in space steps of $\sqrt{\delta}$, and let’s consider the process
+in the interval $[0,t],\ t\in\mathbb{R}^+$. Then,
 
 $$S_t = \sum_{i=0}^{\left\lfloor \frac{t}{\delta} \right\rfloor} X_i$$
 
@@ -71,14 +69,14 @@ where $X_i$ moves by $\pm\sqrt\delta$ with probability
 $\mathbb{P}=\frac{1}{2}$. Then, $E\left[S_t\right]=0$ and
 
 $$Var[X_i] = E^2[X_i] - E[X_i^2] = E^2[X_i] = (+\sqrt{\delta})^2 \cdot \frac{1}{2} + (-\sqrt{\delta})^2 \cdot \frac{1}{2} 
-      = \delta$$
+    = \delta$$
 
 $$Var[S_t] = \frac{t}{\delta} \cdot \delta = t$$
 
 Let’s now apply *Central Limit Theorem*:
 
 $$\frac{S_t - \frac{t}{\delta} E[X_i]}{\sqrt{\frac{t}{\delta} Var[X_i]}}
-    = \frac{S_t}{\sqrt{t}} \underset{t \to \infty}{\sim} \mathcal{N}(0,1).$$
+  = \frac{S_t}{\sqrt{t}} \underset{t \to \infty}{\sim} \mathcal{N}(0,1).$$
 
 So, $S_t \sim \mathcal{N}(0,t)$: this is the *Brownian motion*.
 
@@ -122,15 +120,15 @@ is a Brownian motion if and only if
     Noting that
 
     $$E[W_t]  =  0
-            \quad \text{and} \quad
-            Var[\sigma W_t]  =  E[(\sigma W_t)^2]  = \sigma^2 E[W_t^2] =  \sigma^2 t,$$
+          \quad \text{and} \quad
+          Var[\sigma W_t]  =  E[(\sigma W_t)^2]  = \sigma^2 E[W_t^2] =  \sigma^2 t,$$
 
     we have that, in Bachelier’s model, the price
     $p_t = \mu t + \sigma W_t +
-          p_0$ is a *random variable* distributed like
+        p_0$ is a *random variable* distributed like
 
     $$p_t \sim \mathcal{N}(p_0 + \mu t + E[W_t], \sigma^2 t) \equiv
-              \mathcal{N}(p_0 + \mu t, \sigma^2 t).$$
+            \mathcal{N}(p_0 + \mu t, \sigma^2 t).$$
 
 3.  *Geometric Brownian motion*, or *Black-Scholes model*.
 
@@ -140,7 +138,8 @@ is a Brownian motion if and only if
     instead of additive principle. For this model, we will need to find
     a solution and its distribution.
 
-### Itō Formula
+Itō Formula
+-----------
 
 Suppose a model for an underlying asset price dynamics is given: we know
 the form of $dp_t$; we’ll assume Black-Scholes. It is now natural to
@@ -163,9 +162,8 @@ $$f(p_{t+dt}) \approx f(p_t) + f'(p_t)(dp_t) + \frac{1}{2} f''(p_t)(dp_t)^2 + \v
 and substitute the increment $dp_t$ with the Black-Scholes model:
 
 $$\begin{aligned}
-    f(p_{t+dt}) = & f(p_t) + f'(p_t)(\mu p_t dt + \sigma p_t dW_t) +\\ 
-                  & \frac{1}{2}f''(p_t)(\mu^2 p_t^2 (dt)^2 + \sigma^2 p_t^2 (dW_t)^2 + 2 \mu \sigma p_t^2 dtdW_t) 
-  \end{aligned}$$
+  f(p_{t+dt}) = & f(p_t) + f'(p_t)(\mu p_t dt + \sigma p_t dW_t) +\\ 
+                & \frac{1}{2}f''(p_t)(\mu^2 p_t^2 (dt)^2 + \sigma^2 p_t^2 (dW_t)^2 + 2 \mu \sigma p_t^2 dtdW_t) \end{aligned}$$
 
 Since $E[(dW_t)^2] = dt$, we can assume
 $dW_t = \sqrt{dt} = (dt)^\frac{1}{2}$ to have order $\frac{1}{2}$. Let’s
@@ -186,42 +184,42 @@ analyze the orders of all the terms in the approximation:
 The truncated approximation now states that
 
 $$f(p_{t+dt}) = f(p_t) + f'(p_t)(\mu p_t dt + \sigma p_t dW_t) + 
-    \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt).$$
+  \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt).$$
 
 The second derivative term of this equation is called *Itō correction
 term*. The derivative of the function with respect to time can then be
 computed this way:
 
 $$df(p_t) = f(p_{t+dt}) - f(p_t) = f'(p_t)(\mu p_t dt + \sigma p_t dW_t) + 
-    \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt)$$
+  \frac{1}{2} f''(p_t)(\sigma^2 p_t^2 dt)$$
 
 Let’s now separate the deterministic terms from the stochastic terms, so
 we can identify a *drift* and a *volatility* for the model.
 
 $$df(p_t) = \left[ f'(p_t)\mu p_t + \frac{1}{2}f''(p_t)\sigma^2 p_t^2\right]dt
-      + f'(p_t)\sigma p_t dW_t$$
+    + f'(p_t)\sigma p_t dW_t$$
 
 Let $f(p_t) =  \ln(p_t)$ be the price of a derivative instrument with
 underlying price $p_t$; the dynamic for the underlying follows the
 Black-Scholes model. Apply Itō’s formula to this derivative:
 
 $$\begin{aligned}
-      d\ln(p_t) = & \left[ \frac{1}{p_t} \mu p_t + \frac{1}{2}\left( 
-        -\frac{1}{p_t^2}\sigma^2 p_t^2\right)\right]dt +
-        \frac{1}{p_t}\sigma p_t dW_t = \\
-        = & \left[\mu - \frac{1}{2} \sigma^2 \right]dt + \sigma dW_t
-    \end{aligned}$$
+    d\ln(p_t) = & \left[ \frac{1}{p_t} \mu p_t + \frac{1}{2}\left( 
+      -\frac{1}{p_t^2}\sigma^2 p_t^2\right)\right]dt +
+      \frac{1}{p_t}\sigma p_t dW_t = \\
+      = & \left[\mu - \frac{1}{2} \sigma^2 \right]dt + \sigma dW_t
+  \end{aligned}$$
 
 Considering the time interval $[0,t]$, we observe that
 
 $$d\ln(p_t) = \ln(p_t) - \ln(p_0) = \left( \mu - \frac{1}{2}\sigma^2 \right)
-        (t-0) + \sigma (W_t - W_0)$$
+      (t-0) + \sigma (W_t - W_0)$$
 
 and then
 
 $$\ln\left(\frac{p_t}{p_0}\right) = \left(\mu -\frac{1}{2}\sigma^2\right)t + \sigma W_t
-      \iff
-      \frac{p_t}{p_0} = \mathrm{e}^{\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t}$$
+    \iff
+    \frac{p_t}{p_0} = \mathrm{e}^{\left(\mu - \frac{1}{2}\sigma^2\right)t + \sigma W_t}$$
 
 which yields the solution
 
@@ -236,43 +234,44 @@ $$f(t;p_t) = {\mathrm{e}}^{-rt}p_t$$
 The general Itō formula for a function of such a form is
 
 $$\begin{aligned}
-      d[f(t;p_t)] = & 
-        \frac{\partial f}{\partial p_t} dp_t + 
-        \frac{\partial f}{\partial t} dt + 
-        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} (dp_t)^2 +
-        \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial t^2} (dt)^2}}_\text{order 2} +
-        \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial p_t \partial t} 2dtdp_t}}_\text{order 3/2}
-        \\
-        = & 
-        \frac{\partial f}{\partial p_t} dp_t + 
-        \frac{\partial f}{\partial t} dt + 
-        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2dt
-    \end{aligned}$$
+    d[f(t;p_t)] = & 
+      \frac{\partial f}{\partial p_t} dp_t + 
+      \frac{\partial f}{\partial t} dt + 
+      \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} (dp_t)^2 +
+      \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial t^2} (dt)^2}}_\text{order 2} +
+      \underbrace{\cancel{\frac{1}{2} \frac{\partial^2 f}{\partial p_t \partial t} 2dtdp_t}}_\text{order 3/2}
+      \\
+      = & 
+      \frac{\partial f}{\partial p_t} dp_t + 
+      \frac{\partial f}{\partial t} dt + 
+      \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2dt
+  \end{aligned}$$
 
 For the discounting function, this means
 
 $$\begin{aligned}
-      d[e^{-rt}p_t] = & {\mathrm{e}}^{-rt} \cdot 1 \cdot dp_t + -r{\mathrm{e}}^{-rt}p_tdt +
-        \cancelto{0}{\frac{1}{2} \cdot 0 \cdot \sigma^2 p_t^2 dt}
-        \\
-        = & {\mathrm{e}}^{-rt}\left( \mu p_t dt + \sigma p_t dW_t -r p_t dt \right)
-        \\
-        = & (\mu - r) {\mathrm{e}}^{-rt} p_tdt + {\mathrm{e}}^{-rt} p_t\sigma dW_t
-        \\
-      d\tilde{p}_t = & (\mu - r)\tilde{p}_tdt + \sigma \tilde{p}_t dW_t
-    \end{aligned}$$
+    d[e^{-rt}p_t] = & {\mathrm{e}}^{-rt} \cdot 1 \cdot dp_t + -r{\mathrm{e}}^{-rt}p_tdt +
+      \cancelto{0}{\frac{1}{2} \cdot 0 \cdot \sigma^2 p_t^2 dt}
+      \\
+      = & {\mathrm{e}}^{-rt}\left( \mu p_t dt + \sigma p_t dW_t -r p_t dt \right)
+      \\
+      = & (\mu - r) {\mathrm{e}}^{-rt} p_tdt + {\mathrm{e}}^{-rt} p_t\sigma dW_t
+      \\
+    d\tilde{p}_t = & (\mu - r)\tilde{p}_tdt + \sigma \tilde{p}_t dW_t
+  \end{aligned}$$
 
 Hence, the distribution for a discounted asset price follows
 Black-Scholes model:
 
 $$\begin{aligned}
-      \tilde{p}_t = \tilde{p}_0 {\mathrm{e}}^{(\mu - r - \frac{\sigma^2}{2})t + \sigma W_t}
-    \end{aligned}$$
+    \tilde{p}_t = \tilde{p}_0 {\mathrm{e}}^{(\mu - r - \frac{\sigma^2}{2})t + \sigma W_t}
+  \end{aligned}$$
 
 Note that the deterministic and stochastic parts were grouped together,
 to underline the *risk factor*.
 
-### Black-Scholes PDE for option pricing
+Black-Scholes PDE for option pricing
+------------------------------------
 
 In the context of option pricing, Black-Scholes model assumes the
 following:
@@ -291,40 +290,39 @@ following:
 By Itō’s lemma, we get that the option price is
 
 $$df(t;p_t) = \left[ \frac{\partial f}{\partial t}} + \frac{\partial f}{\partial p_t} \mu p_t +
-      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt +
-      \frac{\partial f}{\partial p_t} \sigma p_t dW_t$$
+    \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt +
+    \frac{\partial f}{\partial p_t} \sigma p_t dW_t$$
 
 Construct a *locally* risk-free portfolio, $\Pi_t$, such that
 
 $$\Pi_t = \left\{ 
-      \begin{array}{cl}
-        -1 & \text{positions in options (short)} \\
-        \Delta_t \equiv \frac{\partial f}{\partial p_t} & \text{positions in underlying (long)}
-      \end{array}$$
+    \begin{array}{cl}
+      -1 & \text{positions in options (short)} \\
+      \Delta_t \equiv \frac{\partial f}{\partial p_t} & \text{positions in underlying (long)}
+    \end{array}$$
 
 and study the dynamics of the portfolio value by multiplying the number
 of positions by the dynamics for each kind of instrument (option and
 asset).
 
 $$\begin{aligned}
-    d\Pi_t = & -1 \cdot df(t;p_t) + \frac{\partial f}{\partial p_t} dp_t
-    \\ = & \underbrace{- \left[
-        \frac{\partial f}{\partial t} + \frac{\partial f}{\partial p_t} \mu p_t +
-        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
-        \frac{\partial f}{\partial p_t}\sigma p_t dW_t}_\text{option} +
-      \underbrace{
-        \frac{\partial f}{\partial p_t} \left( \mu p_t dt + \sigma p_t dW_t \right)
-      }_\text{asset}
-    \\ = & - \left[
-        \frac{\partial f}{\partial t} + 
-        \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
-        \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} -
-        \cancel{\frac{\partial f}{\partial p_t}\sigma p_t dW_t}
-        + \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} + 
-        \cancel{\frac{\partial f}{\partial p_t} \sigma p_t dW_t}
-    \\ = & - \left( \frac{\partial f}{\partial t} + 
-      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt
-  \end{aligned}$$
+  d\Pi_t = & -1 \cdot df(t;p_t) + \frac{\partial f}{\partial p_t} dp_t
+  \\ = & \underbrace{- \left[
+      \frac{\partial f}{\partial t} + \frac{\partial f}{\partial p_t} \mu p_t +
+      \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
+      \frac{\partial f}{\partial p_t}\sigma p_t dW_t}_\text{option} +
+    \underbrace{
+      \frac{\partial f}{\partial p_t} \left( \mu p_t dt + \sigma p_t dW_t \right)
+    }_\text{asset}
+  \\ = & - \left[
+      \frac{\partial f}{\partial t} + 
+      \frac{1}{2} \frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right] dt -
+      \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} -
+      \cancel{\frac{\partial f}{\partial p_t}\sigma p_t dW_t}
+      + \cancel{\frac{\partial f}{\partial p_t} \mu p_t dt} + 
+      \cancel{\frac{\partial f}{\partial p_t} \sigma p_t dW_t}
+  \\ = & - \left( \frac{\partial f}{\partial t} + 
+    \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt\end{aligned}$$
 
 Having removed the Brownian motion, we are left without any risky term.
 We impose now the *no arbitrage assumption*, stating that a portfolio is
@@ -332,11 +330,11 @@ risk-free if and only if its dynamics is the same of a bond, that is, it
 accrues interest at a constant (by assumption) rate over time.
 
 $$d\Pi_t \equiv - \left( \frac{\partial f}{\partial t} + 
-      \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt 
-      \stackrel{\text{NAA}}{=} r\Pi_t dt$$
+    \frac{1}{2}\frac{\partial^2 f}{\partial p_t^2} \sigma^2 p_t^2 \right) dt 
+    \stackrel{\text{NAA}}{=} r\Pi_t dt$$
 
 $$-\frac{ {\partial}f}{ {\partial}t} -\frac{1}{2}\frac{ {\partial}^2f}{ {\partial}p_t^2} \sigma^2 p_t^2 =
-    -rf(t;p_t) + \frac{ {\partial}f}{ {\partial}p_t} rp_t$$
+  -rf(t;p_t) + \frac{ {\partial}f}{ {\partial}p_t} rp_t$$
 
 Finally, we obtain the Black-Scholes PDE by rearranging.
 
@@ -348,10 +346,10 @@ $f(T,p_T)$, which is the *option price at maturity* or, equivalently,
 the *payoff*, which is known.
 
 $$f(T;p_T) \stackrel{e.g.}{=}
-    \begin{array}{ll}
-      (P_T - K)^+ = \max \{ P_T - K, 0 \} & \text{European call option} \\
-      (K - P_T)^+ = \max \{ K - P_T, 0 \} & \text{European put option}
-    \end{array}$$
+  \begin{array}{ll}
+    (P_T - K)^+ = \max \{ P_T - K, 0 \} & \text{European call option} \\
+    (K - P_T)^+ = \max \{ K - P_T, 0 \} & \text{European put option}
+  \end{array}$$
 
 European options satisfy Black-Scholes assumptions: the payoff depends
 *only* on the price of the underlying at time $T$, and it is not *path
@@ -377,7 +375,7 @@ probability spaces: the first is the *historical probability space*
 $(\Omega,\mathcal{F},\mathbb{P})$, the second is the *risk neutral
 probability space*
 $(\Omega,  \mathcal{F},   \tilde{\mathbb{P}})  \supseteq
-  (\Omega,\mathcal{F},\mathbb{P})$. To calculate the option price at any
+(\Omega,\mathcal{F},\mathbb{P})$. To calculate the option price at any
 given time $t : 0 <  t < T$ the information in the filtration up to time
 $t$ can be used:
 
@@ -391,10 +389,10 @@ $$C(\tau = T-t, p_t, K, r, \sigma) = f(t;p_t) = p_t \mathcal{N}(d_1) - K{\mathrm
 where
 
 $$\begin{aligned}
-      d_1 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r + \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}}
-      \\
-      d_2 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r - \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}} = d_1 - \sigma\sqrt{T-t}
-    \end{aligned}$$
+    d_1 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r + \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}}
+    \\
+    d_2 &= \frac{\ln\left(\frac{p_t}{K}\right) + \left(r - \frac{\sigma^2}{2}\right)(T-t)}{\sigma \sqrt{T-t}} = d_1 - \sigma\sqrt{T-t}
+  \end{aligned}$$
 
 *Proof*. Suppose we are in a Black-Scholes world: we have one risky
 asset with dynamics such that
@@ -405,55 +403,211 @@ the *risk premium* and $\frac{\mu-r}{\sigma}$ is the *market price of
 risk*. Hence,
 
 $$\begin{aligned}
-    dp_t & = rp_t dt + \sigma p_t \left[ dW_t + \frac{\mu-r}{\sigma}dt \right]
-    \\ & = \cancel{rp_tdt} + \sigma p_t dW_t + \mu p_t dt - \cancel{rp_t dt}
-    \\ & = \mu p_t dt + \sigma p_t dW_t
-  \end{aligned}$$
+  dp_t & = rp_t dt + \sigma p_t \left[ dW_t + \frac{\mu-r}{\sigma}dt \right]
+  \\ & = \cancel{rp_tdt} + \sigma p_t dW_t + \mu p_t dt - \cancel{rp_t dt}
+  \\ & = \mu p_t dt + \sigma p_t dW_t\end{aligned}$$
 
 Note that
 $\tilde{W}_t  \sim \mathcal{N}\left(  \frac{\mu-r}{\sigma}\Delta t;
-  \Delta t\right)$ is no longer a standard Brownian motion. We want to
+\Delta t\right)$ is no longer a standard Brownian motion. We want to
 know the option price at time $t=0$, considering, for example, the
 payoff $f(T;p_T) =
-  (p_T - K)^+$:
+(p_T - K)^+$:
 
 $$\begin{aligned}
-    C_0 & = f(0;p_0) = \mathbb{\tilde E}\left[{\mathrm{e}}^{-rT} (p_T - K)^+\right]
-    \\ & \stackrel{\text{Markov}}{=} \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left( 
-    p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma \tilde{W}_T}
-    -K\right)^+\right] = (*)_1
-  \end{aligned}$$
+  C_0 & = f(0;p_0) = \mathbb{\tilde E}\left[{\mathrm{e}}^{-rT} (p_T - K)^+\right]
+  \\ & \stackrel{\text{Markov}}{=} \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left( 
+  p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma \tilde{W}_T}
+  -K\right)^+\right] = (*)_1\end{aligned}$$
 
 Consider now that, if $X  \sim \mathcal{N}(0,T)$ and
 $Y \sim \mathcal{N}(0,1)$ then $X = \sqrt{T}Y$:
 
 $$\begin{aligned}
-    (*)_1 & = \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}Y}-K\right)^+\right]
-    \\ & = \int_{-\infty}^{+\infty} {\mathrm{e}}^{-rt} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y}-K\right)^+
-    \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{\frac{-y^2}{2}}dy = (*)_2
-  \end{aligned}$$
+  (*)_1 & = \mathbb{\tilde E}\left[ {\mathrm{e}}^{-rT} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}Y}-K\right)^+\right]
+  \\ & = \int_{-\infty}^{+\infty} {\mathrm{e}}^{-rt} \left(p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y}-K\right)^+
+  \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{\frac{-y^2}{2}}dy = (*)_2\end{aligned}$$
 
 We compute the integral only where the payoff is positive, that is,
 where
 
 $$\begin{aligned}
-    p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq K
-    & \iff
-    {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq \frac{K}{p_0}
-    \\ & \iff \left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y \geq \ln\frac{K}{p_0}
-    \\ & \iff y \geq \frac{-\ln\frac{p_0}{K} -\left(r - \frac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}} = -d_2
-  \end{aligned}$$
+  p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq K
+  & \iff
+  {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y} \geq \frac{K}{p_0}
+  \\ & \iff \left(r-\frac{\sigma^2}{2}\right)T + \sigma\sqrt{T}y \geq \ln\frac{K}{p_0}
+  \\ & \iff y \geq \frac{-\ln\frac{p_0}{K} -\left(r - \frac{\sigma^2}{2}\right)T}{\sigma\sqrt{T}} = -d_2\end{aligned}$$
 
 $$\begin{aligned}
-    (*)_2 & = \int_{-d_2}^{+\infty} {\mathrm{e}}^{-rt} \left( p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma y\sqrt{T}}-K\right)
-      \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
-      \\ & = \int_{-d_2}^{+\infty} \frac{p_0 {\mathrm{e}}^{-\frac{\sigma^2}{2} + \sigma y\sqrt{T} -\frac{y^2}{2}}}{\sqrt{2\pi}} dy
-      - \int_{-d_2}^{+\infty} \frac{K{\mathrm{e}}^{-rt -\frac{y^2}{2}}}{\sqrt{2\pi}}dy
-      \\ & = p_0 \int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{(\sigma\sqrt{T}+y)^2}{2}}dy
-      - K{\mathrm{e}}^{-rt}\int_{-d2}^{+\infty} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
-      \\ & \left(\text{Let } z=y+\sigma\sqrt{T} \text{ s.t. } -\infty\leq z \leq d_2+\sigma\sqrt{T}\right)
-      \\ & = p_0 \int_{-\infty}^{d_2+\sigma\sqrt{T}} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{z^2}{2}} dz
-      - K{\mathrm{e}}^{-rt}\int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
-      \\ & = p_0 \mathcal{N}(d_2 + \sigma\sqrt{T}) - K{\mathrm{e}}^{-rt} \mathcal{N}(d_2)
-      \\ & = p_0 \mathcal{N}(d_1) - K{\mathrm{e}}^{-rt}\mathcal{N}(d_2).
-  \end{aligned}$$
+  (*)_2 & = \int_{-d_2}^{+\infty} {\mathrm{e}}^{-rt} \left( p_0 {\mathrm{e}}^{\left(r-\frac{\sigma^2}{2}\right)T + \sigma y\sqrt{T}}-K\right)
+    \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+    \\ & = \int_{-d_2}^{+\infty} \frac{p_0 {\mathrm{e}}^{-\frac{\sigma^2}{2} + \sigma y\sqrt{T} -\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+    - \int_{-d_2}^{+\infty} \frac{K{\mathrm{e}}^{-rt -\frac{y^2}{2}}}{\sqrt{2\pi}}dy
+    \\ & = p_0 \int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{(\sigma\sqrt{T}+y)^2}{2}}dy
+    - K{\mathrm{e}}^{-rt}\int_{-d2}^{+\infty} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+    \\ & \left(\text{Let } z=y+\sigma\sqrt{T} \text{ s.t. } -\infty\leq z \leq d_2+\sigma\sqrt{T}\right)
+    \\ & = p_0 \int_{-\infty}^{d_2+\sigma\sqrt{T}} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{z^2}{2}} dz
+    - K{\mathrm{e}}^{-rt}\int_{-\infty}^{d_2} \frac{1}{\sqrt{2\pi}} {\mathrm{e}}^{-\frac{y^2}{2}} dy
+    \\ & = p_0 \mathcal{N}(d_2 + \sigma\sqrt{T}) - K{\mathrm{e}}^{-rt} \mathcal{N}(d_2)
+    \\ & = p_0 \mathcal{N}(d_1) - K{\mathrm{e}}^{-rt}\mathcal{N}(d_2).\end{aligned}$$
+
+Cox-Ross-Rubinstein model
+-------------------------
+
+This model is the equivalent, in discrete time, of Black-Scholes. CRR
+accepts the assumptions of one risky asset, one riskless asset and no
+arbitrage. The discrete time implies the underlying is modeled using a
+discrete probability distribution: the Binomial model.
+
+### Single period model
+
+In a simple, single period model, the asset can go up in value of a
+percentage $u$ with probability $p$ or go down in value of a percentage
+$d$ with probability $1-p$.
+
+$$S_0 \left\{ \begin{array}{lc}
+      S_1^u = uS_0 & p \\ S_1^d= dS_0 & 1-p
+    \end{array}
+  \quad\quad
+  C_0 \left\{ \begin{array}{lc}
+      C_u = (uS_0 -K)^+ & p \\ C_d = (dS_0 - K)^+ & 1-p
+    \end{array}$$
+
+The percentages are related like this: $u > 1 + r > 1 > d \geq 0$.
+
+Again, construct a risk-free portfolio using the underlying and the
+option. For the portfolio to be risk-free, its payoff must be the same
+for each possible state of the world.
+
+$$\begin{aligned}
+  \Pi = \left\{ \begin{array}{cl}
+      -1 & \text{option (short)} \\
+      \Delta & \text{underlying (long)}
+    \end{array}\end{aligned}$$
+
+$$\begin{aligned}
+  \Pi \text{ is risk-free } \iff -C_u + \Delta uS_0 = -C_d + \Delta dS_0
+  \iff \Delta = \frac{C_u-C_d}{S_0(u-d)}\end{aligned}$$
+
+So, $\Delta$ is the quantity of stock to be held so that the portfolio
+is risk-free. Now impose the no arbitrage assumption: assert that the
+risk-free portfolio in any of the two states of the world after one
+period must have the same payoff as the portfolio at initial time
+capitalized for the interest rate.
+
+$$\begin{aligned}
+  -C_u + \Delta uS_0 \stackrel{NAA}{=} (1 + r)(-C_0 + \Delta S_0)\end{aligned}$$
+
+$$\begin{gathered}
+  -C_u + \frac{C_u - C_d}{\cancel{S_0}(u-d)}\cancel{S_0}u =
+  (1+r)\left(-C_0 + \frac{C_u - C_d}{\cancel{S_0}(u-d)}\cancel{S_0}\right) \Rightarrow
+  \\
+  \frac{-C_u(u-d) + (C_u - C_d)u}{u-d} = -C_0(1+r) + \frac{(1+r)(C_u-C_d)}{u-d} \Rightarrow
+  \\
+  \frac{C_u(u-d)+(C_u-C_d)(1+r-u)}{u-d} = C_0(1+r) \Rightarrow
+  \\
+  C_0 = \frac{1}{1+r} \left( C_u \frac{1+r-d}{u-d} + C_d \frac{-1-r+u}{u-d} \right) \Rightarrow
+  \\
+  C_0 = \frac{1}{1+r} \left(C_u p + C_d(1-p)\right) \quad \text{ where } \quad p = \frac{1+r-d}{u-d}\end{gathered}$$
+
+Due to the previously imposed relationships between $u$, $d$ and $r$,
+$p$ respects positivity and can be used as a *risk neutral probability*.
+
+$$\begin{gathered}
+  \mathbb{\tilde E}[S_1] = (uS_0)p + (dS_0)(1-p) = uS_0 \frac{1+r-d}{u-d} + dS_0 \frac{u-1-r}{u-d} =
+  \\ \frac{u + ur - ud + du -d -dr}{u-d}S_0 = \frac{(u-d)(1+r)}{u-d}S_0 = (1+r)S_0\end{gathered}$$
+
+### Two-period model
+
+In a two-period CRR model, we have a *recombining tree*, that is,
+up-down and down-up movements yield the same result.
+
+$$\begin{gathered}
+  S_0 \left\langle 
+    \begin{array}{ll}
+      uS_0 & \left\langle 
+        \begin{array}{l}
+          u^2S_0 \\
+          udS_0
+        \end{array} 
+      \\
+      dS_0 & \left\langle
+        \begin{array}{l}
+          duS_0 \\
+          d^2 S_0
+        \end{array} 
+    \end{array} 
+  \quad\quad
+  C_0 \left\langle 
+    \begin{array}{ll}
+      C_u & \left\langle 
+        \begin{array}{l}
+          C_{uu} = (u^2S_0-K)^+ \\
+          C_{ud} = (udS_0-K)^+
+        \end{array} 
+      \\
+      C_d & \left\langle
+        \begin{array}{l}
+          C_{du} = (duS_0-K)^+ \\
+          C_{dd} = (d^2S_0-K)^+
+        \end{array} 
+    \end{array} \end{gathered}$$
+
+To obtain the option price $C_0$ in this case, the idea is to simply
+backtrack from the last period, calculating the discounted $C_u$ and
+$C_d$ first.
+
+$$\begin{gathered}
+  C_u \left\langle 
+    \begin{array}{l}
+      C_{uu} = (u^2S_0-K)^+ \\
+      C_{ud} = (udS_0-K)^+
+    \end{array} 
+  \implies
+  C_u = \frac{1}{1+r}(C_{uu} p + C_{ud}(1-p))
+  \\
+  C_d \left\langle
+    \begin{array}{l}
+      C_{du} = (duS_0-K)^+ \\
+      C_{dd} = (d^2S_0-K)^+
+    \end{array} 
+  \implies
+  C_d = \frac{1}{1+r}(C_{du} p + C_{dd}(1-p))\end{gathered}$$
+
+Finally, we compose these results by computing
+
+$$\begin{gathered}
+  C_0 \left\langle
+    \begin{array}{l}
+      C_u \\
+      C_d 
+    \end{array} 
+  \implies
+  C_0 = \frac{1}{1+r} (C_up + C_d(1-p)) \\
+  = \frac{1}{(1+r)^2} \left( C_{uu}p^2 + C_{ud}p(1-p) + C_{du}p(1-p) + C_{dd}(1-p)^2 \right) \\
+  = \frac{1}{(1+r)^2} \left(C_{uu}p^2 + 2C_{ud}p(1-p) + C_{dd}(1-p)^2 \right)\end{gathered}$$
+
+### $n$-period model
+
+Generalizing to $n$ periods, we have a $\sim \mathcal{B}(n,p)$ model;
+any given path on the binomial tree over the $n$ periods can have
+$j: 0 \leq  j \leq  n$ steps up and $n-j$ steps down for the
+underlying’s price, with a payoff of
+
+$$(u^jd^{n-j}S_0 -K)^+$$
+
+for an option on the underlying. Following the same reasoning as per the
+two- and one-period model, we compute the option price as
+
+$$\begin{gathered}
+  C_0 = \frac{1}{(1+r)^n} \sum_{j=0}^n \left( u^j d^{n-j} S_0 - K \right)^+ \binom{n}{j} p^j(1-p)^{n-j} \\
+  \text{(let } a \text{ s.t. } \forall j \geq a \quad u^jd^{n-j}S_0 - K > 0 \text{)} \\
+  = \frac{1}{(1+r)^n} \sum_{j=a}^n \left( u^j d^{n-j} S_0 - K \right)^+ \binom{n}{j} p^j(1-p)^{n-j} \\
+  = \frac{1}{(1+r)^n} \left[\sum_{j=a}^n \binom{n}{j}p^j(1-p)^{n-j}u^jd^{n-j}S_0 -K\sum_{j=a}^n \binom{n}{j}p^j(1-p)^{n-j}\right] \\
+  = \sum_{j=a}^n \binom{n}{j}\left(\frac{pu}{1+r}\right)^j \left(\frac{(1-p)d}{1+r}\right)^{n-j}S_0 - \frac{1}{(1+r)^n}K\mathcal{B}_{(n,p)}(j\geq a) \\
+  = S_0 \mathcal{B}_{\left(n, \frac{pu}{1+r}\right)}(j \geq a)- \frac{1}{(1+r)^n}K\mathcal{B}_{(n,p)}(j\geq a).\end{gathered}$$
+
+Note that $\frac{pu}{1+r}$ is a probability because it is positive by no
+arbitrage assumption and sums to $1$ with $\frac{(1-p)d}{1+r}$. Note
+that the equation looks very similar to Black-Scholes, with the Binomial
+distribution instead of the Normal.
