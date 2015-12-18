@@ -451,6 +451,8 @@ $$\begin{aligned}
     \\ & = p_0 \mathcal{N}(d_2 + \sigma\sqrt{T}) - K{\mathrm{e}}^{-rt} \mathcal{N}(d_2)
     \\ & = p_0 \mathcal{N}(d_1) - K{\mathrm{e}}^{-rt}\mathcal{N}(d_2).\end{aligned}$$
 
+<span>TODO Itō table and stuff</span>
+
 Cox-Ross-Rubinstein model
 -------------------------
 
@@ -611,3 +613,137 @@ Note that $\frac{pu}{1+r}$ is a probability because it is positive by no
 arbitrage assumption and sums to $1$ with $\frac{(1-p)d}{1+r}$. Note
 that the equation looks very similar to Black-Scholes, with the Binomial
 distribution instead of the Normal.
+
+Martingale
+----------
+
+Let $S_1$ be the stock price tomorrow. Under *risk neutral probability*,
+this should be equal to the stock price today capitalized for the given
+interest rate:
+
+$$\mathbb{\tilde E} [S_1] = (1+r)S_0$$
+
+Dividing both sides by $(1+r)$, we obtain that the expectation (under
+*risk neutral probability*) of the stock price tomorrow ($t=1$) is equal
+to the stock price today ($t=0$).
+
+$$\mathbb{\tilde E}\left[ \frac{1}{(1+r)^1} S_1 \right] = \frac{1}{(1+r)^0} S_0 \equiv S_0$$
+
+This is a *martingale*: in such a process, the expectations through time
+are constant. A martingale is a *fair game* (in game-theoretic sense),
+that is, it has zero drift. The stock market is not a fair game in the
+real world, but in a risk neutral world it is.
+
+**(Martingale).** Let $(\Omega,\mathcal{F},\mathbb{P})$ be a probability
+space. The process $(M_t)_{t\geq 0}$ is a *martingale* if the
+expectation at a future time $t$ given the information up to time $s$ is
+equal to the expectation at time $s : 0 \leq s \leq t \leq T$.
+
+$$\mathbb{E}[M_{t} | \mathcal{F}_s] = \mathbb{E}[M_s]$$
+
+Equivalently,
+
+$$\mathbb{E}[M_{s+ds} | \mathcal{F}_s] = M_s 
+    \implies
+    \mathbb{E}[M_{s+ds}] = \mathbb{E}[M_{s}]$$
+
+The Brownian motion is a martingale.
+
+*Proof*. Let $(W_t)_{t\geq 0}$ be a Brownian Motion in $(\Omega,
+  \mathcal{F}, \mathbb{P})$.
+
+$$\mathbb{E}[W_t|\mathcal{F}_s] = W_s,\ s < t \implies
+    \mathbb{E}[W_t-W_s|\mathcal{F}_s] = 0$$
+
+From the definition of Brownian motion, and its independent increments
+property, follows
+
+$$\mathbb{E}[W_t-W_s|\mathcal{F}_s] = \mathbb{E}[W_t-W_s] \stackrel{\mathcal{N}(0,\sigma)}{=} 0$$
+
+Pricing exotic options
+----------------------
+
+The generic process of pricing an option involves discounting the
+option’s payoff at maturity given a model for the underlying.
+
+### Digital call option
+
+The payoff for a *digital call option* is $H$ when the option is *in the
+money*, $0$ otherwise:
+
+$$D_T = \left\{ \begin{array}{cl}
+      H & \text{if } p_t \geq K \\
+      0 & \text{otherwise}
+    \end{array}$$
+
+Let $dp_t  = (r-q)p_tdt  + \sigma  p_t dW_t$ be the model for the
+underlying, $t:0\leq  t\leq T$ the current time and $T$ the maturity.
+The price of the digital option at time $t$ under the risk neutral
+measure is
+
+$$D_t = \mathbb{\tilde E}\left[ {\mathrm{e}}^{-r(T-t)}H \mathbbm{1}_{(p_T \geq K)} |\mathcal{F}_t \right]
+      = {\mathrm{e}}^{-r(T-t)}H \mathbb{E}\left[ \mathbbm{1}_{(p_T \geq K)} | \mathcal{F}_t\right]
+      = \cdots$$
+
+Knowing that
+$\mathbb{E}[\mathbbm{1}_A] =  1  \cdot  \mathbb{P}(A) +  0  \cdot
+\mathbb{P}(A^C) = \mathbb{P}(A)$, we can replace the expectation with
+the risk neutral probability; then, for the Markov property of
+Black-Scholes model, we replace the filtration with the information
+known at time $t$, that is, the underlying price.
+
+$$\cdots = {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}(p_T \geq K | \mathcal{F}_t)
+        = {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}(p_T \geq K | p_t) = \cdots$$
+
+By Itō’s lemma, we can express the price at maturity $p_T$ as
+
+$$p_T = p_t {\mathrm{e}}^{\left(r-q-\frac{\sigma^2}{2}\right)(T-t) + \sigma(W_T-W_t)}$$
+
+Also, let $Y : Y\sqrt{T-t} = W_T-W_t$. Then,
+
+$$\begin{aligned}
+  \cdots &= {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}\left( p_t {\mathrm{e}}^{\left(r-q-\frac{\sigma^2}{2}\right)(T-t) +\sigma(W_T-W_t)} \geq K\right)
+  \\&= {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}\left( p_t {\mathrm{e}}^{\left(r-q-\frac{\sigma^2}{2}\right)(T-t) +\sigma Y\sqrt{T-t}} \geq K\right)
+  \\&= {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}\left(Y \geq -\frac{\ln\frac{p_t}{K} + \left(r-q-\frac{\sigma^2}{2}\right)(T-t)}{\sigma\sqrt{T-t}}\right)
+  \\&= {\mathrm{e}}^{-r(T-t)}H \mathbb{\tilde P}(Y \geq -d_2) 
+  \\&= {\mathrm{e}}^{-r(T-t)}H \mathcal{N}(-d_2)\end{aligned}$$
+
+### Asset-or-nothing call option
+
+The payoff for an *asset-or-nothing* call option is $p_T$ when the
+option is *in the money*, $0$ otherwise:
+
+$$A_T = \left\{ \begin{array}{cl}
+      p_T & \text{if } p_t \geq K \\
+      0 & \text{otherwise}
+    \end{array}$$
+
+The *asset-or-nothing* option price at present time $t$ is then computed
+as
+
+$$\begin{aligned}
+  A_t &= {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-r(T-t)} p_T \mathbbm{1}(p_T \geq K) | \mathcal{F}_t } \right]}
+  \\&= {\mathrm{e}}^{-r(T-t)} {\mathbb{\tilde E}\left[ { p_T \mathbbm{1}(p_T \geq K) | \mathcal{F}_t } \right]}
+       \stackrel{\small Markov}{=}
+       {\mathrm{e}}^{-r(T-t)} {\mathbb{\tilde E}\left[ { p_T \mathbbm{1}(p_T \geq K) | p_t } \right]} = \cdots\end{aligned}$$
+
+The indicator function means, again, that the expectation for $p_T$ can
+be computed only over the part where $p_T \geq K$, that is, past $d_2$.
+
+$$\begin{aligned}
+  \cdots &= {\mathrm{e}}^{-r(T-t)} \int_{-d_2}^\infty p_t {\mathrm{e}}^{\left(r-q-\frac{\sigma^2}{2}\right)(T-t)+\sigma (W_T-W_t)} 
+            \cdot \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+  \\&= \int_{-d_2}^\infty p_t {\mathrm{e}}^{\left(r-r-q-\frac{\sigma^2}{2}\right)(T-t)+\sigma (W_T-W_t)} 
+       \cdot \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+   \\&= p_t {\mathrm{e}}^{-q(T-t)} \int_{-d_2}^\infty \frac{ {\mathrm{e}}^{-\frac{\sigma^2}{2}+\sigma y\sqrt{T-t}\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+   \\&= p_t {\mathrm{e}}^{-q(T-t)} \int_{-d_2}^\infty \frac{ {\mathrm{e}}^{-\frac{(\sigma\sqrt{T-t} + y)^2}{2}}}{\sqrt{2\pi}} dy = \cdots\end{aligned}$$
+
+Now we flip the integration domain thanks to Normal distribution’s
+symmetry property and then integrate by substituting
+$z : z(y)  = \sigma\sqrt{T-t} + y$; the new integration domain extremes
+are then $z(-\infty) = -\infty$ and $z(d_2)
+= d_2 + \sigma\sqrt{T-t} = d_1$.
+
+$$\begin{aligned}
+  \cdots &= p_t {\mathrm{e}}^{-q(T-t)} \int_{-\infty}^{d_1} \frac{ {\mathrm{e}}^{-\frac{z^2}{2}}}{\sqrt{2\pi}} dz
+  \\&= p_t {\mathrm{e}}^{-q(T-t)} \mathcal{N}(d_1).\end{aligned}$$
