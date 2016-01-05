@@ -451,8 +451,6 @@ $$\begin{aligned}
     \\ & = p_0 \mathcal{N}(d_2 + \sigma\sqrt{T}) - K{\mathrm{e}}^{-rt} \mathcal{N}(d_2)
     \\ & = p_0 \mathcal{N}(d_1) - K{\mathrm{e}}^{-rt}\mathcal{N}(d_2).\end{aligned}$$
 
-<span>TODO Itō table and stuff</span>
-
 Cox-Ross-Rubinstein model
 -------------------------
 
@@ -727,15 +725,17 @@ $$\begin{aligned}
        \stackrel{\small Markov}{=}
        {\mathrm{e}}^{-r(T-t)} {\mathbb{\tilde E}\left[ { p_T \mathbbm{1}(p_T \geq K) | p_t } \right]} = \cdots\end{aligned}$$
 
-The indicator function means, again, that the expectation for $p_T$ can
-be computed only over the part where $p_T \geq K$, that is, past $d_2$.
+$p_T$ is a *random variable*; its expectation can be computed, knowing
+its distribution, by integrating. The indicator function means that the
+expectation for $p_T$ can be computed only over the part where
+$p_T  \geq K$, that is, past $d_2$.
 
 $$\begin{aligned}
   \cdots &= {\mathrm{e}}^{-r(T-t)} \int_{-d_2}^\infty p_t {\mathrm{e}}^{\left(r-q-\frac{\sigma^2}{2}\right)(T-t)+\sigma (W_T-W_t)} 
             \cdot \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
   \\&= \int_{-d_2}^\infty p_t {\mathrm{e}}^{\left(r-r-q-\frac{\sigma^2}{2}\right)(T-t)+\sigma (W_T-W_t)} 
        \cdot \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
-   \\&= p_t {\mathrm{e}}^{-q(T-t)} \int_{-d_2}^\infty \frac{ {\mathrm{e}}^{-\frac{\sigma^2}{2}+\sigma y\sqrt{T-t}\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+   \\&= p_t {\mathrm{e}}^{-q(T-t)} \int_{-d_2}^\infty \frac{ {\mathrm{e}}^{-\frac{\sigma^2}{2}+\sigma y\sqrt{T-t}-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
    \\&= p_t {\mathrm{e}}^{-q(T-t)} \int_{-d_2}^\infty \frac{ {\mathrm{e}}^{-\frac{(\sigma\sqrt{T-t} + y)^2}{2}}}{\sqrt{2\pi}} dy = \cdots\end{aligned}$$
 
 Now we flip the integration domain thanks to Normal distribution’s
@@ -747,3 +747,503 @@ are then $z(-\infty) = -\infty$ and $z(d_2)
 $$\begin{aligned}
   \cdots &= p_t {\mathrm{e}}^{-q(T-t)} \int_{-\infty}^{d_1} \frac{ {\mathrm{e}}^{-\frac{z^2}{2}}}{\sqrt{2\pi}} dz
   \\&= p_t {\mathrm{e}}^{-q(T-t)} \mathcal{N}(d_1).\end{aligned}$$
+
+Equivalence of PDEs with Risk Neutral Valuation
+-----------------------------------------------
+
+Do PDEs and risk neutral valuation yield the same value for the price of
+a derivative instrument? Suppose $f(t;p_t)$ satisfies Black-Scholes PDE:
+
+$$\frac{ {\partial}f}{ {\partial}t} + rp_t\frac{ {\partial}f}{ {\partial}p_t} + \frac{1}{2} \frac{ {\partial}^2 f}{ {\partial}p_t^2}\sigma p_t^2 = rf(t;p_t)$$
+
+We need to check if the price arising from risk neutral valuation is the
+same:
+
+$$f(t;p_t) = {\mathbb{\tilde E}\left[ {e^{-r(T-t)} \cdot \text{payoff} | \mathcal{F}_t} \right]}$$
+
+Given the option price $f$, apply Itō to get the discounted option
+price.
+
+$$\begin{aligned}
+  d\left[ f(t;p_t) {\mathrm{e}}^{-rt}\right] &= -r{\mathrm{e}}^{-rt} fdt + {\mathrm{e}}^{-rt} df + 0
+  \\&= -r{\mathrm{e}}^{-rt} fdt + {\mathrm{e}}^{-rt} \left( \frac{ {\partial}f}{ {\partial}t} dt + \frac{ {\partial}f}{ {\partial}p_t} rp_tdt+ \frac{ {\partial}f}{ {\partial}p_t} \sigma p_t dW_t + 
+       \frac{1}{2}\frac{ {\partial}^2 f}{ {\partial}p_t^2} \sigma^2p_t^2dt \right)
+  \\&= {\mathrm{e}}^{-rt}dt \left( \cancel{-rf} + \cancel{\frac{ {\partial}f}{ {\partial}t} + \frac{ {\partial}f}{ {\partial}p_t} rp_t + \frac{1}{2} \frac{ {\partial}^2 f}{ {\partial}p_t^2} \sigma^2 p_t^2}\right)
+       + {\mathrm{e}}^{-rt} \frac{ {\partial}f}{ {\partial}p_t}\sigma p_t dW_t
+  \\&= {\mathrm{e}}^{-rt} \frac{ {\partial}f}{ {\partial}p_t}\sigma p_t dW_t\end{aligned}$$
+
+We now note that the discounted option price lacks a drift, and is thus
+a *martingale*: hence,
+
+$${\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-rT} f(T;p_T)| \mathcal{F}_t} \right]} = {\mathrm{e}}^{-rt}f(t;p_t)$$
+
+and the two approaches give the same result. **TODO not clear!**
+
+Dynamic Hedging: the Greeks
+---------------------------
+
+The operation of constructing a locally risk-free portfolio like in
+Black-Scholes approach is an *hedging strategy*. The *Greeks* are
+quantities, named after the fact that each of them is indicated by a
+different greek letter, which convey some information on the sensitivity
+of the price of a derivative with respect to some financial component of
+the model (for example, the price or the volatility of the underlying,
+or some other parameter). Each greek is actually a function of time, and
+can thus be computed at any time $t$, hence providing a form of *dynamic
+hedging*.
+
+### Delta
+
+The greek *Delta* measures the *sensitivity* of the price of the
+derivative with respect to the underlying’s price.
+
+$$\Delta_t = \frac{ {\partial}f(t;S_t)}{ {\partial}S_t}$$
+
+Let’s calculate the Delta for an European call option. The call option
+price is
+$$C_t = S_t \mathcal{N}(d_1) - K{\mathrm{e}}^{-r(T-t)}\mathcal{N}(d_2)
+    \quad
+    \text{where} \quad
+    \left\{ \begin{array}{c}
+        d_1 = \frac{
+          \ln\frac{S_t}{K} + \left(r + \frac{\sigma^2}{2}\right)(T-t)
+        }{\sigma\sqrt{T-t}} \\
+        d_2 = d_1 - \sigma\sqrt{T-t}
+      \end{array}$$
+
+The Delta is the quantity of underlying I need at time $t$ to hedge the
+risk in a portfolio
+$\Pi_t  = \left\{ -1  \text{ option},  \frac{ {\partial}f(t;S_t)}{ {\partial}S_t} \text{ underlying}\right\} $.
+
+$$\Delta^C_t = \frac{ {\partial}C_t}{ {\partial}S_t} = \mathcal{N}(d_1)$$
+
+Notice that the Delta for an European call option is always positive,
+which means that in the case of the portfolio $\Pi_t$ the underlying
+will always be held in a long position.
+
+*Proof.* $S_t$ also appears in $d_1$ and $d_2$, so we can’t treat
+$\mathcal{N}(d_1)$ and $\mathcal{N}(d_2)$ as constants; we must
+differentiate them w.r. $S_t$ too. For the chain rule,
+
+$$\frac{ {\partial}S_t\mathcal{N}(d_1)}{ {\partial}S_t} = \cancelto{1}{\frac{ {\partial}S_t}{ {\partial}S_t}} \mathcal{N}(d_1) + S_t \frac{ {\partial}\mathcal{N}(d_1)}{ {\partial}S_t}.$$
+
+So,
+
+$$\Delta^C_t = \mathcal{N}(d_1) + S_t\frac{ {\partial}\mathcal{N}(d_1)}{ {\partial}S_t} - K{\mathrm{e}}^{-r(T-t)} \frac{ {\partial}\mathcal{N}(d_2)}{ {\partial}S_t}$$
+
+Compute the two partial derivatives appearing. First, the one for
+${\mathcal{N}}(d_1)$: $$\begin{aligned}
+    \frac{ {\partial}{\mathcal{N}}(d_1)}{ {\partial}S_t} &= \frac{ {\partial}}{ {\partial}S_t} \int_{-\infty}^{d_1} \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}} dy
+    = {\mathcal{N}}'(d_1) \frac{ {\partial}d_1}{ {\partial}S_t} - {\mathcal{N}}'(-\infty)\cancelto{0}{\frac{ {\partial}(-\infty)}{ {\partial}S_t}}
+    \\&= n(d_1)\frac{ {\partial}d_1}{ {\partial}S_t} = n(d_1) \cdot \frac{1}{\sigma\sqrt{T-t}}\frac{1}{\frac{S_t}{\cancel{K}}} \frac{1}{\cancel{K}}
+    = \frac{n(d_1)}{S_t\sigma\sqrt{T-t}}
+  \end{aligned}$$
+
+Then, the one for ${\mathcal{N}}(d_2)$: $$\begin{aligned}
+    \frac{ {\partial}{\mathcal{N}}(d_2)}{ {\partial}S_t} &= n(d_2)\frac{ {\partial}d_2}{ {\partial}S_t} = n(d_2)\frac{ {\partial}(d_1 - \sigma\sqrt{T-t})}{ {\partial}S_t}
+    \\&= n(d_2) \cdot \left( \frac{1}{\sigma\sqrt{T-t}} \frac{1}{\frac{S_t}{\cancel{K}}} \frac{1}{\cancel{K}} \right)
+    = \frac{n(d_2)}{S_t\sigma\sqrt{T-t}}
+  \end{aligned}$$
+
+Now plug the results in the original equation for Delta:
+$$\begin{aligned}
+    \Delta^C_t = {\mathcal{N}}(d_1) + S_t \frac{n(d_1)}{S_t\sigma\sqrt{T-t}} - K{\mathrm{e}}^{-r(T-t)}\frac{n(d_2)}{S_t\sigma\sqrt{T-t}}
+  \end{aligned}$$
+
+Isolate the two terms multiplying the gaussian density $n$:
+$$\begin{aligned}
+    & S_t \frac{n(d_1)}{S_t\sigma\sqrt{T-t}} - K{\mathrm{e}}^{-r(T-t)}\frac{n(d_2)}{S_t\sigma\sqrt{T-t}} =
+    \\=& \frac{1}{S_t\sigma\sqrt{T-t}} \left( S_t n(d_1) - K{\mathrm{e}}^{-r(T-t)}n(d_2)\right) =
+    \\=& \frac{1}{S_t\sigma\sqrt{T-t}} \left( \frac{S_t {\mathrm{e}}^{-\frac{d_1^2}{2}}}{\sqrt{2\pi}} 
+    - \frac{K{\mathrm{e}}^{-r(T-t) -\frac{d_2^2}{2}}}{\sqrt{2\pi}}\right) =
+    \\=& \frac{1}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}} \left( S_t {\mathrm{e}}^{-\frac{d_1^2}{2}} - K{\mathrm{e}}^{-r(T-t) -\frac{d_2^2}{2}} \right) =
+    \\=& \frac{1}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}} \left( S_t {\mathrm{e}}^{-\frac{d_1^2}{2}} - K{\mathrm{e}}^{-r(T-t) - \frac{d_1^2}{2} - \frac{\sigma^2(T-t)}{2} + \frac{2}{2}d_1\sigma\sqrt{T-t}} \right) =
+    \\=& \frac{ {\mathrm{e}}^{-\frac{d_1^2}{2}}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\left( S_t - K{\mathrm{e}}^{-r(T-t) -\frac{\sigma^2(T-t)}{2} + d_1\sigma\sqrt{T-t}}\right) =
+    \\=& \frac{ {\mathrm{e}}^{-\frac{d_1^2}{2}}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\left( S_t - K{\mathrm{e}}^{\cancel{-r(T-t) -\frac{\sigma^2(T-t)}{2}} + \ln\frac{S_t}{K} + \cancel{\left( r + \frac{\sigma^2}{2}\right)(T-t)}}\right) =
+    \\=& \frac{ {\mathrm{e}}^{-\frac{d_1^2}{2}}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\left( S_t - K{\mathrm{e}}^{\ln\frac{S_t}{K}}\right)
+    = \frac{ {\mathrm{e}}^{-\frac{d_1^2}{2}}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\left( S_t - K\frac{S_t}{K}\right) =
+    \\=& \frac{ {\mathrm{e}}^{-\frac{d_1^2}{2}}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\cancel{\left( S_t - S_t\right)} = 0.
+  \end{aligned}$$
+
+We have proven $S_t      \frac{n(d_1)}{S_t\sigma\sqrt{T-t}}     -
+  K{\mathrm{e}}^{-r(T-t)}\frac{n(d_2)}{S_t\sigma\sqrt{T-t}} = 0$, so we
+finally get
+
+$$\Delta^C_t = {\mathcal{N}}(d_1).$$
+
+Informally, Delta indicates how much to buy or sell to cover your
+portfolio.
+
+### Gamma
+
+In approximating the derivative price $f(t+dt;S_{t+dt})$ with a
+first-order Taylor expansion, that is, hedging with the Delta, we commit
+a *hedging error*, whose quantity is
+
+$$\left(f(t;S_t) + \frac{ {\partial}f(t;S_t)}{ {\partial}S_t}\right) - f(t+dt;S_{t+dt})$$
+
+This represent the quantity that is not covered by the hedging strategy.
+The magnitude of the hedging error depends on how much the concavity of
+the derivative curve is stressed. By studying the second order
+derivative, we can see how long it takes for the hedging error to get
+too large, and thus decide how often to buy and sell to rebuild the
+locally risk-free portfolio. The second derivative of the derivative
+price with respect to the underlying price is the Gamma:
+
+$$\Gamma_t = \frac{ {\partial}^2 f(t;S_t)}{ {\partial}S_t^2} = \frac{ {\partial}\Delta_t}{ {\partial}S_t}$$
+
+For example, for the European call, we have:
+
+$$\Gamma^C_t = \frac{ {\partial}C_t}{ {\partial}S_t^2} = \frac{ {\partial}\Delta^C_t}{ {\partial}S_t} = \frac{ {\partial}{\mathcal{N}}(d_1)}{ {\partial}S_t} =
+  \frac{n(d_1)}{S_t\sigma\sqrt{T-t}}.$$
+
+### Other Greeks
+
+Three other important Greeks are the Vega, the Rho and the Theta.
+
+$$\begin{array}{rlr}
+    \text{Vega}_t &= \frac{ {\partial}f(t;S_T)}{ {\partial}\sigma} & \text{Sensitivity w.r. to the volatility} \\
+    \rho_t &= \frac{ {\partial}f(t;S_T)}{ {\partial}r} & \text{Sensitivity w.r. to the risk-free rate} \\
+    \Theta_t &= \frac{ {\partial}f(t;S_T)}{ {\partial}t} & \text{Sensitivity w.r. to time} \\
+  \end{array}$$
+
+These three Greeks allow you to hedge against model misspecifications
+instead of risk; for example, Black-Scholes’ considers both the
+volatility $\sigma$ and the risk-free rate $r$ as constants, and this
+tends not to be true in reality.
+
+For European call options, these three Greeks are
+
+$$\text{Vega}^C_t = \frac{ {\partial}C_t}{ {\partial}\sigma} = S_t\sqrt{T-t} \cdot n(d_1)$$
+$$\rho^C_t = \frac{ {\partial}C_t}{ {\partial}r} = K(T-t){\mathrm{e}}^{-r(T-t)}{\mathcal{N}}(d_2)$$
+$$\Theta^C_t = \frac{ {\partial}C_t}{ {\partial}t} = -\frac{\sigma S_t n(d_1)}{2\sqrt{T-t}} - rK{\mathrm{e}}^{-r(T-t)}{\mathcal{N}}(d_2)$$
+
+### Put-call parity
+
+The Greeks for put options can be calculated by being mindful of the
+put-call parity relationship:
+
+$$\forall t \quad C_t + K{\mathrm{e}}^{-r(T-t)} = P_t + S_t$$
+
+Or, equivalently,
+
+$$C_t = P_t + S_t - K{\mathrm{e}}^{-r(T-t)}$$
+$$P_t = C_t + K{\mathrm{e}}^{-r(T-t)} - S_t$$
+
+Then, the Greeks for European put options can be calculated as follows.
+
+#### Put Delta
+
+$$\Delta^P_t = \frac{ {\partial}P_t}{ {\partial}S_t} = \frac{ {\partial}C_t}{ {\partial}S_t} - \frac{ {\partial}S_t}{ {\partial}S_t} =
+    \Delta^C_t - 1 = {\mathcal{N}}(d_1) - 1 < 0$$
+
+For a put option, the Delta is always negative, this means that the
+hedging position should always be short.
+
+#### Put Gamma
+
+For a put option, the Gamma is identical to the case of a call option.
+
+$$\Gamma^P_t = \frac{ {\partial}^2 P_t}{ {\partial}S_t^2} = \frac{ {\partial}\Delta^P_t}{ {\partial}S_t} =
+  \frac{ {\partial}\Delta^C_t - 1}{ {\partial}S_t} = \frac{ {\partial}\Delta^C_t}{ {\partial}S_t} = \frac{n(d_1)}{S_t\sigma\sqrt{T-t}} \equiv \Gamma^C_t$$
+
+#### Other Greeks for put options
+
+$$\text{Vega}^P_t = \frac{ {\partial}P_t}{ {\partial}\sigma} = S_t\sqrt{T-t}\cdot n(d_1) \equiv \text{Vega}^C_t$$
+
+$$\rho^P_t = \frac{ {\partial}P_t}{ {\partial}r} = -K(T-t){\mathrm{e}}^{-r(T-t)} {\mathcal{N}}(-d_2)$$
+
+$$\Theta^P_t = \frac{ {\partial}P_t}{ {\partial}t} = -\frac{\sigma S_t n(d_1)}{2\sqrt{T-t}} + rK{\mathrm{e}}^{-r(T-t)}{\mathcal{N}}(-d_2)$$
+
+Suppose you have to sell an European call option whose underlying,
+$S_t$, follows a Black-Scholes model. The following is known:
+
+$$S_0 = 8 \quad K = 8 \quad \mu = 20\% \quad \sigma = 40\% \quad r = 4\% \quad T = 1 \text{\ year}$$
+
+**(1)**. Determine the number of underlying to buy/sell to hedge this
+short position.
+
+We want to create a *delta-neutral portfolio*, that is, a portfolio
+where $\Delta = 0$. This way, risk is removed since the rate of change
+of the portfolio value with respect to the price variation of the asset
+is zero.
+
+We know that
+
+$$\Delta_0^C = {\mathcal{N}}(d_1) = {\mathcal{N}}\left(\frac{\ln\frac{8}{8} + \left(0.04 + \frac{0.4^2}{2}\right) \cdot 1}{0.4\sqrt{1}}\right)
+    = {\mathcal{N}}(0.3) = 0.618$$
+
+We can now impose the Delta for the portfolio
+$\pi = -1 \text{\ call option} +
+  x \text{ stocks}$ to be zero and solve the resulting equation for $x$
+to get the number of stocks the portfolio needs to have.
+
+$$\Delta^\pi = -1\cdot\Delta_0^C + x\cdot\overbrace{\Delta_0^{S}}^{\text{always }1} = 0 \implies
+    x = \frac{\Delta^C_0}{\Delta^S_0} = \frac{0.618}{1} = 0.618$$
+
+This means that 0.618 units of stock must be bought to hedge one unit of
+short call option. From this, the Delta for the put option with same
+strike and maturity as the call can be computed by put-call parity:
+
+$$\Delta_0^P = \Delta_0^C - 1 = 0.618 - 1 = -0.382$$
+
+**(2)**. Having a call option on the same underlying, but with strike
+$K'
+  = 12$, construct a portfolio which is Delta- and Gamma-neutral.
+
+$$\Delta_0^{C'} = {\mathcal{N}}(d'_1) = {\mathcal{N}}\left(
+      \frac{\ln\frac{8}{12} + \left(0.04+\frac{0.4^2}{2}\right)\cdot 1}{0.4\sqrt{1}}
+    \right) = {\mathcal{N}}(-0.71) = 0.238$$
+$$\Gamma_0^{C} = \frac{n(d_1)}{\sigma S_0\sqrt{T-t}} = 
+    \frac{\frac{1}{\sqrt{2\pi}} {\mathrm{e}}^\frac{-(0.3)^2}{2}}{0.4 \cdot 8 \sqrt{1}} = 0.12$$
+$$\Gamma_0^{C'} = \frac{n(d'_1)}{\sigma S_0\sqrt{T-t}} = 
+    \frac{\frac{1}{\sqrt{2\pi}} {\mathrm{e}}^\frac{-(-0.71)^2}{2}}{0.4 \cdot 8 \sqrt{1}} = 0.097$$
+
+To have a Gamma-neutral portfolio, we must solve for $y$ the equation
+
+$$\Gamma_0^\pi = -1 \cdot \Gamma_0^C + y\Gamma_0^{C'} + 0.618\cdot \overbrace{\Gamma_0^S}^{\text{always }0} = 0
+    \implies y = \frac{\Gamma_0^C}{\Gamma_0^{C'}} = 1.237$$
+
+This means we need to buy 1.237 units of the second call option; but,
+doing this, the portfolio may no longer be Delta-neutral, since
+$\Delta^\pi  =
+  1.237\Delta_0^{C'} \neq  0$. At this point, we start from the
+Gamma-neutral portfolio of options and make it Delta-neutral again by
+imposing
+
+$$-1\cdot\Delta_0^C + 1.237\cdot\Delta_0^{C'} + x\Delta_0^S = 0
+    \implies
+    x = \Delta_0^C - 1.237\Delta_0^{C'} = 0.324$$
+
+Finally, selling one unit of the first call option, buying 1.237 units
+of the second call option and 0.324 units of underlying grants a Delta-
+and Gamma-neutral portfolio.
+
+More Exotic options
+-------------------
+
+American, Asian, Lookback, Barrier.
+
+Interest rate models
+====================
+
+Black-Scholes asset and derivative pricing models assume the interest
+rate for the considered time interval to be constant. In reality,
+interest rate is subject to change in a stochastic way, similar to what
+happens for underlyings.
+
+### Fundamental models
+
+The following are some of the models used for modeling interest rate
+evolution. Generally, the deterministic factor indicates *mean
+reversion*, whereas the stochastic factor is a volatility similar to
+Bachelier or Black-Scholes models.
+
+  ------------------------------------------------------------------------------------ --------------------------------------------------------------------------------------------------
+  <span> **Vašiček model** $$dr_t = a(b - r_t)dt + \sigma dW_t$$ </span>               <span> **Cox-Ingersoll-Ross model** $$dr_t = a(b - r_t)dt + \sigma \sqrt{r_t}dW_t$$ </span>
+  <span> **Dothran model** $$dr_t = a r_t dt + \sigma r_t dW_t$$ </span>               <span> **Ho-Lee model** $$dr_t = \Theta (t) dt + \sigma dW_t$$ </span>
+  <span> **Hull-White model** $$dr_t = a(t)(b(t) - r_t)dt + \sigma(t) dW_t$$ </span>   <span> **Generalized CIR model** $$dr_t = a(t)(b(t) - r_t)dt + \sigma(t)\sqrt{r_t}dW_t$$ </span>
+  ------------------------------------------------------------------------------------ --------------------------------------------------------------------------------------------------
+
+### Vašiček model
+
+<span>**(Vašiček model is Gaussian)**</span>
+
+*Proof.* Use Itō’s Lemma to study the dynamics of ${\mathrm{e}}^{as}r_s$
+where $r_s$ follows a Vašiček model. Note that the model can be written
+equivalently as $dr_t = -a(r_t-b)dt + \sigma dW_t$.
+
+$$\begin{aligned}
+  d({\mathrm{e}}^{as}r_s) &= a{\mathrm{e}}^{as}r_s ds + {\mathrm{e}}^{as}dr_s =
+  a{\mathrm{e}}^{as}r_sds + {\mathrm{e}}^{as}\left( -a(r_s-b)ds + \sigma dW_s\right)
+  \\&= \underbracket{ {\mathrm{e}}^{as}ab}_\text{determ.}ds + \underbracket{ {\mathrm{e}}^{as}\sigma}_\text{determ.} dW_s\end{aligned}$$
+
+Now compute the value of the function in the increment $[0,t]$ and,
+consequently, the value of the process at time $t$.
+
+$$\begin{gathered}
+  {\mathrm{e}}^{at}r_t - {\mathrm{e}}^{a\cdot 0}r_0 = \int_0^t ab{\mathrm{e}}^{as}ds + \int_0^t {\mathrm{e}}^{as}\sigma dW_s \implies \\
+  {\mathrm{e}}^{at}r_t = r_0 + \left[b{\mathrm{e}}^{as}\right]^t_0 + \int_0^t {\mathrm{e}}^{as}\sigma dW_s \implies \\
+  r_t = {\mathrm{e}}^{-at} r_0 + b{\mathrm{e}}^{-at}({\mathrm{e}}^{at}-1) + {\mathrm{e}}^{-at} \int_0^t {\mathrm{e}}^{as}\sigma dW_s\end{gathered}$$
+
+The remaining integral is with respect of a function of time and a
+stochastic variable, and is thus a *stochastic integral*; we study its
+distribution.
+
+Let $h$ be a deterministic function, such that we can have
+$\int_0^t h(s)dW_s$. For example, consider the *step function*
+
+$$h(s) = \sum_{i=0}^{n-1} h_i \mathbbm{1}_{[t_i,t_{i+1}]}(s)
+  \quad \text{s.t.} \quad
+  \int_0^t h(s)dW_s \approx \sum_{i=0}^{n-1} h_i \left( W_{t_i+1} - W_{t_i} \right)$$
+
+Each of the Brownian motion increments in the summation is thus
+distributed like
+
+$$W_{t_{i+1}} - W_{t_i} \sim {\mathcal{N}}(0,t_{i+1}-t_i)} \equiv {\mathcal{N}}(0,h^2_i(t_{i+1}-t_i))$$
+
+From the stability of the Gaussian distribution and the independence of
+Brownian increments follows
+
+$$X(W) = \int_0^t h(s)dW_s \sim {\mathcal{N}}\left(0, \sum_{i=0}^{n-1} h^2_i(t_{i+1}-t_i)\right) \approx
+  {\mathcal{N}}\left(0, \int_0^t h^2(s)ds\right)$$
+
+### Stochastic interest rates
+
+When interest rates are considered as being stochastic, the zero-coupon
+bond price $P(t,T)$ at time $t$ with maturity $T$ becomes a stochastic
+process, varying across the *term structure of interest rates*
+$\mathcal{T}  =
+[T_1,T_2]$:
+
+$$\left( \left(P(t,T)\right)_{t \in [0,T]}\right)_{T\in \mathcal{T}}$$
+
+The zero-coupon bond behaves like a derivative instrument whose
+underlying is the spot interest rate. The classical approach to
+stochastic bond pricing is to give an exogenous model for the spot
+interest rate $(r_t)_{t  \in [0,T]}$ and, under no arbitrage assumption,
+derive $\left(P(t,T)\right)_{t  \in [0,T]}$. Two conditions imposed for
+this are:
+
+-   $ P(T,T) = 1 $
+
+-   $ P(t_1,T) <P (t_2,T) \quad \text{for all} \quad t_1 < t_2 $
+
+It has been proved that, under no arbitrage assumption, the discounted
+stock price and the discounted european option price are *martingales*
+with respect to the risk neutral measure in
+$(\Omega,\mathcal{F},\mathbb{\tilde P})$:
+
+$$\begin{aligned}
+  dS_t &= rS_tdt + \sigma S_t dW_t \implies\\
+  d({\mathrm{e}}^{-rt}S_t) &= -r{\mathrm{e}}^{-rt}S_tdt+ {\mathrm{e}}^{-rt}dS_t \\
+                    &= -r{\mathrm{e}}^{-rt}S_tdt + {\mathrm{e}}^{-rt}\left(rS_tdt+\sigma S_t dW_t\right) \\
+                    &= {\mathrm{e}}^{-rt}S_t\sigma dW_t \\
+  d({\mathrm{e}}^{-rt}f(t;S_t)) & = \frac{ {\partial}f}{ {\partial}S_t}{\mathrm{e}}^{-rt}\sigma S_t dW_t\end{aligned}$$
+
+Let now $\hat{P}(t,T)$ and $P(t,T)$ be, respectively, the discounted
+bond price and the bond price, assume $(r_t)$ to be such that
+$dr_t  = \mu(r_t)dt  +
+\sigma(r_t)dW_t$. Hence,
+
+$$\hat{P}(t,T) = {\mathrm{e}}^{-\int_0^T r(s)ds}P(t,T)$$
+
+(Note that, if $r_t$ is supposed constant,
+${\mathrm{e}}^{-\int_0^T r(s)ds}  = rt$). Impose now $\hat{P}$ to be a
+martingale:
+
+$${\mathbb{\tilde E}\left[ { \hat{P}(T,T) \Big| \mathcal{F}_t} \right]} = \hat{P}(t,T)\quad \forall t<T$$
+
+$${\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-\int_0^T r(s)ds}\hat{P}(T,T) \Big| \mathcal{F}_t} \right]} = {\mathrm{e}}^{-\int_0^T r(s)ds}\hat{P}(t,T)$$
+
+$${\mathrm{e}}^{\int_0^t r(s)ds}{\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-\int_0^T r(s)ds}\hat{P}(T,T) \Big| \mathcal{F}_t} \right]} = \hat{P}(t,T)$$
+
+The part ${\mathrm{e}}^{\int_0^t r(s)ds}$ is known at time $t$, and can
+thus be put inside the expectation; moreover, $P(T,T)=1$ by definition:
+
+$$P(t,T) = {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{\int_0^tr(s)ds -\int_0^Tr(s)ds} \cdot 1 \Big| \mathcal{F}_t} \right]}
+  = {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-\int_t^T r(s)ds} \Big| \mathcal{F}_t} \right]}$$
+
+The bond price is the expectation of the payoff $1$ discounted by the
+correct factor, given the Brownian filtration at time $t$.
+
+### Variance and covariance for Vašiček model
+
+It has been proved that Vašiček model is
+$\sim {\mathcal{N}}(\cdot,\cdot)$, and that the spot rate at time $t$ is
+given by
+
+$$r_t = r_0 {\mathrm{e}}^{at}+b(1-{\mathrm{e}}^{-at}) + \sigma {\mathrm{e}}^{-at}\int_0^t{\mathrm{e}}^{as}dW_s$$
+
+It can be proven that the stochastic part is Gaussian:
+
+$$\sigma{\mathrm{e}}^{-at} \int_0^t {\mathrm{e}}^{as}dW_s \sim {\mathcal{N}}\left(0,\int_0^t{\mathrm{e}}^{2as}ds\right).$$
+
+With $h$ deterministic,
+
+$$\int_0^t h(s)dW_s \approx \sum_{i=0}^{n-1} h_i \cdot (W_{t_{i+1}}-W_{t_i})$$
+
+and we can compute the variance as
+
+$$\begin{gathered}
+  \mathbb{E}\left[ \left( \sum_{i=0}^{n-1} h_i \left(W_{t_{i+1}} - W_{t_i} \right)\right)^2\right]
+  = \\ = \mathbb{E}\left[ \sum_{i=0}^{n-1} h_i^2 \left(W_{t_{i+1}} - W_{t_i} \right)^2 \right]
+  + \mathbb{E}\left[ \sum_{i\neq j} h_i h_j\left(W_{t_{i+1}} - W_{t_i} \right) \left(W_{t_{j+1}} - W_{t_j} \right)\right] =
+  \\ = \mathbb{E}\left[ \sum_{i=0}^{n-1} h_i^2 \left(W_{t_{i+1}} - W_{t_i} \right)^2 \right]
+  + \sum_{i \neq j} h_i h_j \cancelto{0}{\mathbb{E}\left[\left(W_{t_{i+1}} - W_{t_i} \right) \left(W_{t_{j+1}} - W_{t_j} \right)\right]} 
+  \\ = \mathbb{E}\left[ \sum_{i=0}^{n-1} h_i^2 \left(W_{t_{i+1}} - W_{t_i} \right)^2 \right]
+  =  \sum_{i=0}^{n-1} h_i^2 \mathbb{E}\left[ \left(W_{t_{i+1}} - W_{t_i} \right)^2 \right]
+  \\ = \sum_{i=0}^{n-1} h_i^2 (t_{i+1}-t_i) \approx \int_0^t h^2(s)ds\end{gathered}$$
+
+The expectation for the spot rate is
+
+$$\begin{aligned}
+  \mathbb{E}\left[ r_t \right] &= \mathbb{E}\left[r_0 {\mathrm{e}}^{at}+b(1-{\mathrm{e}}^{-at}) + \sigma {\mathrm{e}}^{-at}\int_0^t{\mathrm{e}}^{as}dW_s\right]
+  \\ &= r_0 {\mathrm{e}}^{at} + b(1-{\mathrm{e}}^{at}) + \cancelto{0}{\mathbb{E}\left[\sigma {\mathrm{e}}^{-at}\int_0^t{\mathrm{e}}^{as}dW_s\right]}
+  \\ &= r_0 {\mathrm{e}}^{at} + b(1-{\mathrm{e}}^{at}) \end{aligned}$$
+
+This means Vašiček is
+$\sim {\mathcal{N}}(r_0  {\mathrm{e}}^{at}  + b(1-{\mathrm{e}}^{at})  ,
+\cdot)$. Now, compute the *autocovariance* (note: $\mathrm{Cov}(X,Y) =
+\mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y]$):
+
+$$\begin{aligned}
+  \mathrm{Cov}(r_t,r_{t+h}) &= \mathrm{Cov}\left(
+    \sigma {\mathrm{e}}^{-at}\int_0^t{\mathrm{e}}^{as}dW_s,
+    \sigma {\mathrm{e}}^{-a(t+h)}\int_0^{t+h}{\mathrm{e}}^{as}dW_s,
+  \right)
+  \\ &= \mathbb{E}\left[ 
+    \sigma{\mathrm{e}}^{-at}\int_0^t{\mathrm{e}}^{as}dW_s \cdot
+    \sigma{\mathrm{e}}^{-a(t+h)}\int_0^{t+h}{\mathrm{e}}^{as}dW_s
+  \right] - 0
+  \\ &= \sigma^2 {\mathrm{e}}^{-at-a(t+h)} \mathbb{E}\left[
+    \int_0^t{\mathrm{e}}^{as}dW_s(\omega) \cdot
+    \int_0^{t+h}{\mathrm{e}}^{as}dW_s(\omega) \cdot
+  \right]
+  \\ &= \sigma^2 {\mathrm{e}}^{-at-a(t+h)} \mathbb{E}\left[
+    \int_0^t{\mathrm{e}}^{as}dW_s(\omega) \cdot \left(
+      \int_0^{t}{\mathrm{e}}^{as}dW_s(\omega) +
+      \int_t^{t+h}{\mathrm{e}}^{as}dW_s(\omega)
+    \right)
+  \right]\end{aligned}$$
+
+$$\begin{aligned}
+  &= \sigma^2 {\mathrm{e}}^{-at-a(t+h)} \left(\mathbb{E}\left[
+      \int_0^t \left({\mathrm{e}}^{as}dW_s(\omega)\right)^2 
+    \right] + \cancelto{0}{\mathbb{E}\left[
+      \int_0^{t}{\mathrm{e}}^{as}dW_s(\omega) \cdot
+      \int_t^{t+h}{\mathrm{e}}^{as}dW_s(\omega)
+    \right]}
+  \right)
+  \\ &= \sigma^2 {\mathrm{e}}^{-at-a(t+h)} \mathbb{E}\left[
+    \int_0^t {\mathrm{e}}^{2as}dW_s(\omega)
+  \right] 
+  = \sigma^2 {\mathrm{e}}^{-at-a(t+h)} \int_0^t {\mathrm{e}}^{2as}ds
+  \\ &= \sigma^2 {\mathrm{e}}^{-2at-ah} \left[\frac{1}{2a}{\mathrm{e}}^{2av}\right]^t_0
+  = \sigma^2{\mathrm{e}}^{-2at-ah} \cdot\frac{ {\mathrm{e}}^{2at}-1}{2a}\end{aligned}$$
+
+Finally, we can assert that, with $h  \to  0$, Vašiček model is
+distributed like
+
+$$\sim {\mathcal{N}}\left(
+    r_0 {\mathrm{e}}^{-at}+b(1-{\mathrm{e}}^{-at}), \frac{\sigma^2{\mathrm{e}}^{-2at}({\mathrm{e}}^{2at}-1)}{2a}
+  \right)$$
+
+and the price of a zero-coupon bond depends on the parameters
+
+$$P(t,T;\alpha) \quad \alpha = (a,b,\sigma).$$
+
+The theoretical term structure curve can be fitted with the observed
+data:
+
+$$\left( P(0,T;\alpha)\right)_{T\in \mathcal{T}} \stackrel{\text{fit}}{\equiv}
+  \left( P^*(0,T;\alpha)\right)_{T\in \mathcal{T}}$$
+
+This is very underdetermined; instead of using a model as simple as
+regular Vašiček or Cox-Ingersoll-Ross, we can use the generalization of
+models such as Hull-White,
+
+$$dr_t = a(t)(b(t) - r_t)dt +\sigma(t)dW_t$$
+
+where parameters in the vector $\alpha$ are functions of time, yielding
+an infinite class of parameters.

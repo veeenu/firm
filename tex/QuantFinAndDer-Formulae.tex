@@ -1,0 +1,80 @@
+\documentclass[oneside,titlepage,headinclude,12pt,a4paper,BCOR5mm,footinclude]{article}
+\usepackage{pdfpages}
+\usepackage[utf8]{fontenc}
+\usepackage{mathtools}
+\usepackage{bbm}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{enumitem} 
+\usepackage{cancel}
+\renewcommand*\rmdefault{ppl}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5em}
+%\theoremstyle{definition}
+\newtheoremstyle{defn}
+  {\topsep}
+  {\topsep}
+  {\normalfont}
+  {0pt}
+  {\bfseries}
+  {.}
+  {5pt plus 1pt minus 1pt}
+  {}
+\theoremstyle{defn}
+\newtheorem{defn}{Definition}
+\newtheorem{example}{Example}
+\newtheorem{theo}{Theorem}
+
+\newcommand{\eexp}{\mathrm{e}}
+\newcommand{\rnE}[1]{\mathbb{\tilde E}\left[ {#1} \right]}
+\newcommand{\rnP}[1]{\mathbb{\tilde P}\left( {#1} \right)}
+\newcommand\NN{\mathcal{N}}
+\newcommand\de\partial
+
+\title{Quantitative Finance and Derivatives \\ {\small Formulae}}
+
+\begin{document}
+
+\maketitle
+
+\section{Interest rate models}
+
+\begin{tabular}{p{.5\columnwidth}p{.5\columnwidth}}
+{
+  \textbf{Va\v{s}i\v{c}ek model}
+  \[
+    dr_t = a(b - r_t)dt + \sigma dW_t   
+  \]
+} & {
+  \textbf{Cox-Ingersoll-Ross model}
+  \[
+    dr_t = a(b - r_t)dt + \sigma \sqrt{r_t}dW_t   
+  \]
+} \\
+{
+  \textbf{Dothran model}
+  \[
+    dr_t = a r_t dt + \sigma r_t dW_t
+  \]
+} & {
+  \textbf{Ho-Lee model}
+  \[
+    dr_t = \Theta (t) dt + \sigma dW_t
+  \]
+} \\
+{
+  \textbf{Hull-White model}
+  \[
+    dr_t = a(t)(b(t) - r_t)dt + \sigma(t) dW_t
+  \]
+} & {
+  \textbf{Generalized CIR model}
+  \[
+    dr_t = a(t)(b(t) - r_t)dt + \sigma(t)\sqrt{r_t}dW_t   
+  \]
+}
+\end{tabular}
+
+\end{document}
