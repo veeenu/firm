@@ -1247,3 +1247,163 @@ $$dr_t = a(t)(b(t) - r_t)dt +\sigma(t)dW_t$$
 
 where parameters in the vector $\alpha$ are functions of time, yielding
 an infinite class of parameters.
+
+### A generic short rate model
+
+We want a generic, risk neutral model for the short rate. Let
+
+$$dr(t) = \tilde{\mu}(t,r_t)dt + \sigma(t,r_t)d\tilde{W}_t$$
+
+be the dynamics for our general model, where $t$ is time and $r_t$ is
+state. Then, the zero-coupon bond price is
+
+$$P(t,T) = {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-\int_t^T r(s)ds} \Big| \mathcal{F}_t} \right]}$$
+
+The objective is to find $\tilde{\mu}$ in the risk neutral world with
+the information coming from the real, *historical* world. So, martingale
+measures should be derived from the market. Assume there are many
+maturities in the market, and there exist two zero-coupon bonds with
+maturities $S$ and $T$, whose underlying is the short rate:
+
+$$\begin{gathered}
+  P(t,S) \equiv F^S(t,r_t) \\
+  P(t,T) \equiv F^T(t,r_t) \\\end{gathered}$$
+
+Now give a model for the interest rate. Note that $\mu$ and $W_t$ are
+historical, as opposed to the $\tilde{mu}$ and $\tilde{W}_t$ in the
+risk-neutral world, but $\sigma$ is the same in both worlds.
+
+$$dr_t = \mu(t,r_t)dt + \sigma(t,r_t)dW_t$$
+
+Apply Itō’s Lemma:
+
+$$\begin{gathered}
+  dF^S = F^S(\alpha_S dt + \sigma_S dW_t), \quad\quad
+  dF^T = F^T(\alpha_T dt + \sigma_T dW_t) \\ 
+  \text{where} \\
+  \alpha_S = \frac{1}{F^S}\left(\frac{ {\partial}F^S}{ {\partial}t} + \frac{ {\partial}F^S}{ {\partial}r}\mu + \frac{1}{2}\frac{ {\partial}^2F^S}{ {\partial}r^2}\sigma^2\right) 
+  \quad \text{drift for the bond price} \\
+  \sigma_S = \frac{1}{F^S}\left(\frac{ {\partial}F^S}{ {\partial}r}\sigma \right) \quad\text{volatility for the bond price}\end{gathered}$$
+
+Now apply Black-Scholes. Construct a portfolio with $h_S$ positions in
+the bond with maturity $S$ and $h_T$ positions in the bond with maturity
+$T$:
+
+$$V = h_S F^S + h_T F^T \quad\quad s.t. \quad\quad
+  dV = h_S dF^S + h_T dF^T$$
+
+Let now
+
+$$u_S \stackrel{def}{=} h_S \frac{F_S}{V} \quad\quad
+  u_T \stackrel{def}{=} h_T \frac{F_T}{V} \quad\quad
+  \text{s.t.}\quad\quad
+  u_S+u_T = \frac{h_SF^S + h_TF^T}{V} = 1$$
+
+be the percent values of each of the bonds’ positions with respect to
+the portfolio $V$. We can rewrite the dynamics for the portfolio as
+
+$$\begin{aligned}
+  dV &= V\left( u_S \frac{dF^S}{F^S} + u_T \frac{dF^T}{F^T} \right)
+  \\&= V(u_S(\alpha_Sdt + \sigma_S dW_t) + u_T(\alpha_Tdt + \sigma_T dW_t))
+  \\&= V((u_S\alpha_S + u_T\alpha_T)dt + (u_S\sigma_S + u_T\sigma_T)dW_t)\end{aligned}$$
+
+Then, impose the no arbitrage assumption to make the portfolio
+risk-free:
+
+$$\begin{gathered}
+  \begin{cases}
+    u_S + u_T = 1 \\ u_S\sigma_S + u_T\sigma_T = 0
+  \end{cases}
+  \implies
+  \begin{cases}
+    u_S = 1 - u_T \\
+    (1-u_T)\sigma_S + u_T\sigma_t = 0
+  \end{cases}
+  \implies \\
+  \begin{cases}
+    \\ \sigma_S - u_T(\sigma_S-\sigma_T) = 0
+  \end{cases}
+  \implies 
+  \begin{cases}
+    u_T = -\frac{\sigma_S}{\sigma_T - \sigma_S}\\
+    u_S = \frac{\sigma_T}{\sigma_T - \sigma_S}
+  \end{cases}\end{gathered}$$
+
+Holding the two bonds in percent quantities of $u_S,u_T$, the portfolio
+is now risk free and the variation is deterministic.
+
+$$dV = \cancel{V}(u_S\alpha_S + u_T\alpha_T)\cancel{dt} \stackrel{NAA}{=} r_t\cancel{V}\cancel{dt}$$
+
+This leads to the equation
+
+$$\begin{gathered}
+  u_S\alpha_S + u_T\alpha_T = r(t) \implies
+  r(t) = \frac{\sigma_T}{\sigma_T - \sigma_S} \alpha_S - \frac{\sigma_S}{\sigma_T - \sigma_S} \alpha_T
+  \implies\\
+  r(t) = \frac{\sigma_T\alpha_S - \sigma_S\alpha_T}{\sigma_T - \sigma_S}
+  \implies
+  \sigma_T\alpha_S - \sigma_S\alpha_T = r(t) \cdot (\sigma_T - \sigma_S)
+  \implies\\
+  \frac{\alpha_S - r}{\sigma_S} = \frac{\alpha_T - r}{\sigma_T}\end{gathered}$$
+
+which means that, under no arbitrage assumption, there is an *exogenous*
+coefficient which is invariant with respect to the market, called
+*market price of risk*, equal to the excess return divided by the
+volatility:
+
+$$\lambda = \frac{\alpha_T - r}{\sigma_T}$$
+
+This coefficient can be estimated by using the *capital asset pricing
+model*. Multiplying by $\sigma_T$ we get
+$\alpha_S - r(t) = \lambda\sigma_S$ and we can substitute $\alpha_S$ by
+its definition, to get
+
+$$\begin{gathered}
+  \frac{1}{F^S}\left(\frac{ {\partial}F^S}{ {\partial}t} + \frac{ {\partial}F^S}{ {\partial}r} \mu + 
+  \frac{1}{2} \frac{ {\partial}^2 F^S}{ {\partial}r^2} \sigma^2 \right) - r = \lambda\frac{1}{F^S}\left(\frac{ {\partial}F^S}{ {\partial}r}\sigma\right)
+  \implies\\
+  \frac{ {\partial}F^S}{ {\partial}t} + \frac{ {\partial}F^S}{ {\partial}r}\mu + \frac{1}{2}\frac{ {\partial}^2 F^S}{ {\partial}r^2}\sigma^2 - rF^S = \lambda \frac{ {\partial}F^S}{ {\partial}r}\sigma
+  \implies\\
+  \frac{ {\partial}F^S}{ {\partial}t} + (\mu - \lambda\sigma)\frac{ {\partial}F^S}{ {\partial}r} + \frac{1}{2} \frac{ {\partial}^2 F^S}{ {\partial}r^2}\sigma^2 = rF^S\end{gathered}$$
+
+which is similar to the boundary-free Black-Scholes partial differential
+equation. Imposing the condition $P(S,S)\equiv F^S(S,r_S)=1$ yields
+
+$$dr(t) = (\mu - \lambda\sigma)dt + \sigma dW_t$$
+
+The drift part is exogenous and defines which probability measure we are
+using; the drift $\tilde{\mu} =  \mu -  \lambda\sigma$ is the one to be
+used in the risk-neutral world.
+
+### Affine term structures
+
+<span>**(Affine short rate model).**</span> A short rate model is
+*affine* if the associated term structure is of the form
+
+$$P(t,T) = {\mathrm{e}}^{A(t,T) -B(t,T)r_t}, \quad\quad A,B\quad\text{deterministic}$$
+
+Vašiček, CIR, Ho-Lee and Hull-White are affine models. How to derive A
+and B? Let $dr_t = \mu(t,r_t) dt  + \sigma(t,r_t)dW_t$ be a generic
+short rate model.
+
+-   If $$\begin{aligned}
+          \mu(t,T) = \alpha(t)r_t + \beta(t) &\quad \text{drift is affine} \\
+          \sigma(t,T) = \sqrt{\gamma(t)r_t + \delta(t)} &\quad \text{volatility is affine}
+        \end{aligned}$$ then $r_t$ is affine.
+
+-   Solve the Riccati equation to get $A$ and $B$. $$\begin{gathered}
+          \begin{cases}
+            \frac{ {\partial}B}{ {\partial}t} + \alpha(t)B - \frac{1}{2}\gamma(t)B^2(t,T) = -1
+            \\
+            \frac{ {\partial}A}{ {\partial}t} - \beta(t)B + \frac{1}{2} \delta(t)B^2(t,T) = 0
+            \\ B(T,T) = 0
+            \\ A(T,T) = 0
+          \end{cases}
+        \end{gathered}$$ The last two equations are boundaries deriving
+    from the fact that
+
+    $$P(T,T) \equiv {\mathrm{e}}^{A(T,T) - B(T,T)r_t} = 1$$
+
+Solution to Ho-Lee model.
+
+$$dr_t = \Theta(t)dt + \sigma dW_t \quad\quad r_t = r_0 \int_0^t \Theta(s)ds + \sigma dW_t$$
