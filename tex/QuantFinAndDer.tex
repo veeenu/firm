@@ -1212,7 +1212,123 @@ For a put option, the Gamma is identical to the case of a call option.
 
 \section{More Exotic options}
 
-American, Asian, Lookback, Barrier.
+Exotic options are those generally not obeying Black-Scholes rules: their payoff
+can be non-smooth and path dependent.  Non-smoothness for the pricing problem is
+generally not a big problem. For example, the Digital option having payoff
+
+\[
+  D_T = \begin{cases} H & S_T\geq K \\ 0 & S_T<K \end{cases} = H\mathbbm{1}_{\{S_T\geq K\}}
+\]
+
+can be priced using risk neutral valuation:
+
+\[
+  D_t = \rnE{\eexp^{-r(T-t)}D_T\Big|\mathcal{F}_t} = H\eexp^{-r(T-t)}\mathbb{P}(S_T\geq K|\mathcal{F}_t)
+  = H\eexp^{-r(T-t)}\NN(d_2)
+\]
+
+The hedging problem, instead, is trickier:
+
+\begin{gather*}
+  \Delta^D_t = \frac{\de D_t}{\de S_t} = H\eexp^{-r(T-t)}\cdot \frac{\de \NN(d_2)}{\de S_t} = (*)
+\end{gather*}
+\begin{gather*}
+  \frac{\de \NN(d_2)}{\de S_t} = \frac{\de}{\de S_t}\int_{-\infty}^{d_2} \frac{\eexp^{-\frac{y^2}{2}}}{\sqrt{2\pi}}dy
+  = n(d_2)\frac{\de d_2}{\de S_t} = \\
+  = \frac{\eexp^{-\frac{\ln\frac{S_t}{k} + \left(r-\frac{\sigma^2}{2}\right)(T-t)^2}{2\sigma^2(T-t)}}}{\sqrt{2\pi}}
+  \cdot \frac{1}{S_t\sigma\sqrt{T-t}}
+\end{gather*}
+\begin{gather*}
+  (*) = \frac{H\eexp^{-r(T-t)}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\cdot\eexp^{-\frac{\ln\frac{S_t}{k} + \left(r-\frac{\sigma^2}{2}\right)(T-t)^2}{2\sigma^2(T-t)}}
+\end{gather*}
+
+As  $t \to  T$, $S_t  \to K$  and $\Delta^D_t  \to \infty$  which means  that an
+infinite amount  of underlying should be  bought to hedge the  portfolio, and in
+practice the hedge can't be done.
+
+\subsection{Barrier options}
+
+Path dependency means that the payoff depends on the process $(S_t)_{t \leq T}$.
+Considering, for example, a payoff depending on the running minimum/running maximum
+of the underlying's price. We must define two new processes
+
+\[
+  S_*(t) = \min\{S_u : 0 \leq u \leq t\} \quad\quad
+  S^*(t) = \max\{S_u : 0 \leq u \leq t\}
+\]
+
+A \textit{barrier option} is an option that activates or loses value when the
+underlying crosses a given price in a certain direction.
+
+\begin{tabular}{p{.3\columnwidth}|p{.3\columnwidth}|p{.3\columnwidth}}
+  & Up & Down \\
+  \hline Knock-in & Activates when underlying price becomes $\geq c$ & Activates when underlying price becomes $\leq c$ \\
+  \hline Knock-out & Deactivates when underlying price becomes $\geq c$& Deactivates when underlying price becomes $\leq c$
+\end{tabular}
+
+A   barrier   option    can   be   priced   using    risk   neutral   valuation.
+For    example,    consider    a    barrier    in-up    call    having    payoff
+$(S_T-K)^+\cdot\mathbbm{1}_{(S_*(t)\leq c)}$:
+
+\begin{gather*}
+  \text{Bar}_0 = \rnE{(S_T-K)^+\cdot\mathbbm{1}_{(S_*(t)\leq c)}}
+  = \iint f(S_t,S_*(t)) \cdots \\= \left(\frac{c}{S_0}\right)^{\frac{2r}{\sigma^2}-1}
+  C^E\left(\frac{c^2}{S_0},T,K\right)
+\end{gather*}
+
+where $C^E$ is the standard European call.
+
+\subsection{Lookback options}
+
+A lookback option gives you the right to pay or receive the minimum or maximum:
+there is no fixed strike price.
+
+\[
+  L_T\equiv (S_T - S_*(t))
+\]
+
+This kind of option can be priced using risk neutral valuation.
+
+\[
+  L_0 = \rnE{\eexp^{-rT}(S_T-S_*(T))}
+\]
+
+\subsection{Asian options}
+
+Asian options'  payoff depends  on an  average value  of the  underlying's price
+during the life of the contract. If  a simple arithmetic average is used for the
+payoff, such as
+
+\[
+  \left(\frac{1}{T} \int_0^T S_tdt - K\right)^+ \approx 
+  \left(\frac{1}{n}\sum_{i=1}^{n} S_{t_i} -K\right)^+
+\]
+
+we don't have an analytical solution since $S_{t_i} \sim $ lognormal is unstable.
+We can use, instead, a geometric average as a proxy for the arithmetic average,
+giving a lower bound:
+
+\[
+  \left(\prod_{i=1}^n S_{t_i}\right)^{\frac{1}{n}} \implies
+\]
+\[
+  \ln\left(\prod_{i=1}^n S_{t_i}\right)^{\frac{1}{n}} =
+  \frac{1}{n}\ln\left(\prod_{i=1}^n S_{t_i}\right) =\frac{1}{n}\sum_{i=1}^{n} \ln S_{t_i}
+  \leq \frac{1}{n}\sum_{i=1}^{n} S_{t_i} 
+\]
+
+\subsection{American options}
+
+American options are  similar to European options but allow  early exercise. Let
+$\tau$ be  the (random) stopping time;  for example, the payoff  for an American
+put option  is is  $(K -  S_\tau)^+$. This  is difficult  to compute  using risk
+neutral valuation:
+
+\[
+  \rnE{\eexp^{-r(T-t)} \max_\tau (K-S_\tau)^+}
+\]
+
+Partial differential equations, on the other hand, have no boundary in this case.
 
 \chapter{Interest rate models}
 
@@ -1685,6 +1801,61 @@ model.
   \[
     dr_t = \Theta(t)dt + \sigma dW_t \quad\quad r_t = r_0 \int_0^t \Theta(s)ds + \sigma dW_t
   \]
+
+  First we prove this is an affine model. Let
+
+  \begin{gather*}
+    \alpha = 0 \quad\quad \beta = \Theta(t) \quad\quad \gamma = 0 \quad\quad \delta = \sigma^2
+  \end{gather*}
+
+  that shows Ho-Lee is affine. Now use the Riccati equations to find the values
+
+  \begin{gather*}
+    \begin{cases}
+      \frac{\de B}{\de t} + 0 \cdot B -\frac{1}{2}\cdot0\cdot B^2(t,T) = -1 \\
+      B(T,T) = 0 \\
+      \frac{\de A}{\de t} - \Theta(t)B(t,T) + \frac{1}{2}\sigma^2B^2(t,T) = 0\\
+      A(T,T) = 0
+    \end{cases}
+    \begin{cases}
+      \frac{\de B}{\de t} = -1 \implies B(t,T) = (T-t) \\
+      B(T,T) = 0 \\
+      \frac{\de A}{\de t} - \Theta(t)(T-t) +\frac{1}{2}\sigma^2(T-t)^2 = 0\\
+      A(T,T) = 0
+    \end{cases} 
+    \\
+    \implies \frac{\de A}{\de t} = \Theta(T-t) - \frac{1}{2}\sigma^2(T-t)^2 \implies \\
+    \int_t^T \frac{\de A}{\de s}ds = \int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds \implies\\
+    \cancelto{0}{A(T,T)} - A(t,T) = \int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds \implies\\
+    A(t,T) = -\int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds
+  \end{gather*}
+
+  So, Ho-Lee's term structure is of the form
+
+  \[
+    P(t,T) = \eexp^{-\int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds -(T-t)r_t}
+  \]
+\end{example}
+
+\begin{example} Solution to Va\v{s}i\v{c}ek model.
+
+  \[
+    dr_t = a(b - r_t)dt + \sigma dW_t = (ab - ar_t)dt + \sigma dW_t
+  \]
+
+  The drift and the volatility are in a form such that
+
+  \[
+    \alpha(t) = -a \quad\quad \beta(t) = ab \quad\quad \gamma(t) = 0 \quad\quad \delta(t) = \sigma^2
+  \]
+
+  The Riccati equation yields
+
+  \begin{gather*}
+    B(t,T) = \frac{1}{a}\left( 1 - \eexp^{-a(T-t)}\right)\\
+    A(t,T) = \frac{1}{a^2}\left( B(t,T)-T+t\right)\left(a^2b-\frac{\sigma^2}{2}\right) -\frac{1}{4a}\sigma^2B^2(t,T).
+  \end{gather*}
+
 \end{example}
 
 \end{document}

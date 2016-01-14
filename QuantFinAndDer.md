@@ -1022,7 +1022,105 @@ and Gamma-neutral portfolio.
 More Exotic options
 -------------------
 
-American, Asian, Lookback, Barrier.
+Exotic options are those generally not obeying Black-Scholes rules:
+their payoff can be non-smooth and path dependent. Non-smoothness for
+the pricing problem is generally not a big problem. For example, the
+Digital option having payoff
+
+$$D_T = \begin{cases} H & S_T\geq K \\ 0 & S_T<K \end{cases} = H\mathbbm{1}_{\{S_T\geq K\}}$$
+
+can be priced using risk neutral valuation:
+
+$$D_t = {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-r(T-t)}D_T\Big|\mathcal{F}_t} \right]} = H{\mathrm{e}}^{-r(T-t)}\mathbb{P}(S_T\geq K|\mathcal{F}_t)
+  = H{\mathrm{e}}^{-r(T-t)}{\mathcal{N}}(d_2)$$
+
+The hedging problem, instead, is trickier:
+
+$$\begin{gathered}
+  \Delta^D_t = \frac{ {\partial}D_t}{ {\partial}S_t} = H{\mathrm{e}}^{-r(T-t)}\cdot \frac{ {\partial}{\mathcal{N}}(d_2)}{ {\partial}S_t} = (*)\end{gathered}$$
+
+$$\begin{gathered}
+  \frac{ {\partial}{\mathcal{N}}(d_2)}{ {\partial}S_t} = \frac{ {\partial}}{ {\partial}S_t}\int_{-\infty}^{d_2} \frac{ {\mathrm{e}}^{-\frac{y^2}{2}}}{\sqrt{2\pi}}dy
+  = n(d_2)\frac{ {\partial}d_2}{ {\partial}S_t} = \\
+  = \frac{ {\mathrm{e}}^{-\frac{\ln\frac{S_t}{k} + \left(r-\frac{\sigma^2}{2}\right)(T-t)^2}{2\sigma^2(T-t)}}}{\sqrt{2\pi}}
+  \cdot \frac{1}{S_t\sigma\sqrt{T-t}}\end{gathered}$$
+
+$$\begin{gathered}
+  (*) = \frac{H{\mathrm{e}}^{-r(T-t)}}{S_t\sigma\sqrt{T-t}\sqrt{2\pi}}\cdot{\mathrm{e}}^{-\frac{\ln\frac{S_t}{k} + \left(r-\frac{\sigma^2}{2}\right)(T-t)^2}{2\sigma^2(T-t)}}\end{gathered}$$
+
+As $t \to  T$, $S_t  \to K$ and $\Delta^D_t  \to \infty$ which means
+that an infinite amount of underlying should be bought to hedge the
+portfolio, and in practice the hedge can’t be done.
+
+### Barrier options
+
+Path dependency means that the payoff depends on the process
+$(S_t)_{t \leq T}$. Considering, for example, a payoff depending on the
+running minimum/running maximum of the underlying’s price. We must
+define two new processes
+
+$$S_*(t) = \min\{S_u : 0 \leq u \leq t\} \quad\quad
+  S^*(t) = \max\{S_u : 0 \leq u \leq t\}$$
+
+A *barrier option* is an option that activates or loses value when the
+underlying crosses a given price in a certain direction.
+
+              Up                                                   Down
+  ----------- ---------------------------------------------------- ----------------------------------------------------
+  Knock-in    Activates when underlying price becomes $\geq c$     Activates when underlying price becomes $\leq c$
+  Knock-out   Deactivates when underlying price becomes $\geq c$   Deactivates when underlying price becomes $\leq c$
+
+A barrier option can be priced using risk neutral valuation. For
+example, consider a barrier in-up call having payoff
+$(S_T-K)^+\cdot\mathbbm{1}_{(S_*(t)\leq c)}$:
+
+$$\begin{gathered}
+  \text{Bar}_0 = {\mathbb{\tilde E}\left[ {(S_T-K)^+\cdot\mathbbm{1}_{(S_*(t)\leq c)}} \right]}
+  = \iint f(S_t,S_*(t)) \cdots \\= \left(\frac{c}{S_0}\right)^{\frac{2r}{\sigma^2}-1}
+  C^E\left(\frac{c^2}{S_0},T,K\right)\end{gathered}$$
+
+where $C^E$ is the standard European call.
+
+### Lookback options
+
+A lookback option gives you the right to pay or receive the minimum or
+maximum: there is no fixed strike price.
+
+$$L_T\equiv (S_T - S_*(t))$$
+
+This kind of option can be priced using risk neutral valuation.
+
+$$L_0 = {\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-rT}(S_T-S_*(T))} \right]}$$
+
+### Asian options
+
+Asian options’ payoff depends on an average value of the underlying’s
+price during the life of the contract. If a simple arithmetic average is
+used for the payoff, such as
+
+$$\left(\frac{1}{T} \int_0^T S_tdt - K\right)^+ \approx 
+  \left(\frac{1}{n}\sum_{i=1}^{n} S_{t_i} -K\right)^+$$
+
+we don’t have an analytical solution since $S_{t_i} \sim $ lognormal is
+unstable. We can use, instead, a geometric average as a proxy for the
+arithmetic average, giving a lower bound:
+
+$$\left(\prod_{i=1}^n S_{t_i}\right)^{\frac{1}{n}} \implies$$
+$$\ln\left(\prod_{i=1}^n S_{t_i}\right)^{\frac{1}{n}} =
+  \frac{1}{n}\ln\left(\prod_{i=1}^n S_{t_i}\right) =\frac{1}{n}\sum_{i=1}^{n} \ln S_{t_i}
+  \leq \frac{1}{n}\sum_{i=1}^{n} S_{t_i}$$
+
+### American options
+
+American options are similar to European options but allow early
+exercise. Let $\tau$ be the (random) stopping time; for example, the
+payoff for an American put option is is $(K -  S_\tau)^+$. This is
+difficult to compute using risk neutral valuation:
+
+$${\mathbb{\tilde E}\left[ { {\mathrm{e}}^{-r(T-t)} \max_\tau (K-S_\tau)^+} \right]}$$
+
+Partial differential equations, on the other hand, have no boundary in
+this case.
 
 Interest rate models
 ====================
@@ -1407,3 +1505,51 @@ short rate model.
 Solution to Ho-Lee model.
 
 $$dr_t = \Theta(t)dt + \sigma dW_t \quad\quad r_t = r_0 \int_0^t \Theta(s)ds + \sigma dW_t$$
+
+First we prove this is an affine model. Let
+
+$$\begin{gathered}
+    \alpha = 0 \quad\quad \beta = \Theta(t) \quad\quad \gamma = 0 \quad\quad \delta = \sigma^2
+  \end{gathered}$$
+
+that shows Ho-Lee is affine. Now use the Riccati equations to find the
+values
+
+$$\begin{gathered}
+    \begin{cases}
+      \frac{ {\partial}B}{ {\partial}t} + 0 \cdot B -\frac{1}{2}\cdot0\cdot B^2(t,T) = -1 \\
+      B(T,T) = 0 \\
+      \frac{ {\partial}A}{ {\partial}t} - \Theta(t)B(t,T) + \frac{1}{2}\sigma^2B^2(t,T) = 0\\
+      A(T,T) = 0
+    \end{cases}
+    \begin{cases}
+      \frac{ {\partial}B}{ {\partial}t} = -1 \implies B(t,T) = (T-t) \\
+      B(T,T) = 0 \\
+      \frac{ {\partial}A}{ {\partial}t} - \Theta(t)(T-t) +\frac{1}{2}\sigma^2(T-t)^2 = 0\\
+      A(T,T) = 0
+    \end{cases} 
+    \\
+    \implies \frac{ {\partial}A}{ {\partial}t} = \Theta(T-t) - \frac{1}{2}\sigma^2(T-t)^2 \implies \\
+    \int_t^T \frac{ {\partial}A}{ {\partial}s}ds = \int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds \implies\\
+    \cancelto{0}{A(T,T)} - A(t,T) = \int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds \implies\\
+    A(t,T) = -\int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds
+  \end{gathered}$$
+
+So, Ho-Lee’s term structure is of the form
+
+$$P(t,T) = {\mathrm{e}}^{-\int_t^T \Theta(T-s) - \frac{1}{2}\sigma^2(T-s)^2 ds -(T-t)r_t}$$
+
+Solution to Vašiček model.
+
+$$dr_t = a(b - r_t)dt + \sigma dW_t = (ab - ar_t)dt + \sigma dW_t$$
+
+The drift and the volatility are in a form such that
+
+$$\alpha(t) = -a \quad\quad \beta(t) = ab \quad\quad \gamma(t) = 0 \quad\quad \delta(t) = \sigma^2$$
+
+The Riccati equation yields
+
+$$\begin{gathered}
+    B(t,T) = \frac{1}{a}\left( 1 - {\mathrm{e}}^{-a(T-t)}\right)\\
+    A(t,T) = \frac{1}{a^2}\left( B(t,T)-T+t\right)\left(a^2b-\frac{\sigma^2}{2}\right) -\frac{1}{4a}\sigma^2B^2(t,T).
+  \end{gathered}$$
