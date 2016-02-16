@@ -3,6 +3,10 @@ layout: post
 title: Quantitative Finance and Derivatives
 ...
 
+<span>Quantitative Finance and Derivatives</span>\
+
+<span>  2016, Andrea Venuta</span>
+
 Models for asset pricing
 ========================
 
